@@ -19,6 +19,7 @@
 		<module>model</module>
 		<module>crawler</module>
     </modules>
+	<packaging>pom</packaging>
 	<name>graduation</name>
 	<description>graduation project by lhf &amp; lt</description>
 
@@ -90,13 +91,13 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.7</version>
+				<version>3.8.1</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>19.0</version>
+				<version>23.0</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
 			<dependency>
@@ -117,6 +118,13 @@
 				<version>1.16.20</version>
 				<scope>provided</scope>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>4.1</version>
+			</dependency>
+
 
 
 		</dependencies>

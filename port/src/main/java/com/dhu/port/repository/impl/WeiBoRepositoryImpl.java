@@ -22,6 +22,41 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
 
     @Override
     public List<CrawlerForWeiBo> queryByPages(Integer offset, Integer rows) {
+        if (offset == null) {
+            offset = 0;
+        }
+        if (rows == null) {
+            rows = 1;
+        }
         return weiBoMapper.queryByPages(offset, rows);
+    }
+
+    @Override
+    public List<String> queryKeyWords() {
+        return weiBoMapper.queryKeyWords();
+    }
+
+    @Override
+    public List<CrawlerForWeiBo> queryByPagesWithKeyWord(String keys, Integer offset, Integer rows) {
+        if (offset == null) {
+            offset = 0;
+        }
+        if (rows == null) {
+            rows = 1;
+        }
+        return weiBoMapper.queryByPagesWithKeyWord(keys, offset, rows);
+    }
+
+    @Override
+    public CrawlerForWeiBo queryById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return weiBoMapper.queryById(id);
+    }
+
+    @Override
+    public List<CrawlerForWeiBo> queryForCache() {
+        return weiBoMapper.queryForCache();
     }
 }

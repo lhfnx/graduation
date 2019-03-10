@@ -48,6 +48,10 @@
 		<!-- 模块依赖 -->
 		<dependency>
 			<groupId>com.dhu</groupId>
+			<artifactId>service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.dhu</groupId>
 			<artifactId>port</artifactId>
 		</dependency>
 

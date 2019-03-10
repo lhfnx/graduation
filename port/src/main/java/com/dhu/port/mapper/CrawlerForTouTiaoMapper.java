@@ -22,8 +22,25 @@ public interface CrawlerForTouTiaoMapper {
     })
     List<CrawlerForTouTiao> queryAll();
 
+    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 ORDER BY datachange_createtime DESC LIMIT 0,100")
+    @ResultMap("crawlerTouTiaoMapper")
+    List<CrawlerForTouTiao> queryForCache();
+
     @Select("SELECT * FROM crawler_toutiao ORDER BY datachange_createtime DESC LIMIT #{offset},#{rows}")
     @ResultMap("crawlerTouTiaoMapper")
     List<CrawlerForTouTiao> queryByPages(@Param("offset")Integer offset,@Param("rows")Integer rows);
+
+    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 AND key_word LIKE #{keys} ORDER BY datachange_createtime" +
+            " DESC LIMIT #{offset},#{rows}")
+    @ResultMap("crawlerTouTiaoMapper")
+    List<CrawlerForTouTiao> queryByPagesWithKeyWord(@Param("keys") String keys, @Param("offset") Integer offset, @Param
+            ("rows") Integer rows);
+
+    @Select("SELECT key_word FROM crawler_toutiao WHERE is_active = 1")
+    List<String> queryKeyWords();
+
+    @Select("SELECT * FROM crawler_toutiao WHERE id =#{id}  AND is_active = 1")
+    @ResultMap("crawlerTouTiaoMapper")
+    CrawlerForTouTiao queryById(@Param("id") Long id);
 
 }
