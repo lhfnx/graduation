@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Transactional
@@ -58,5 +60,17 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
     @Override
     public List<CrawlerForWeiBo> queryForCache() {
         return weiBoMapper.queryForCache();
+    }
+
+    @Override
+    public Long queryCount() {
+        return weiBoMapper.queryCount();
+    }
+
+    @Override
+    public List<CrawlerForWeiBo> queryHot(Timestamp today) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(today);
+        return weiBoMapper.queryHot(time);
     }
 }

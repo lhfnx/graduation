@@ -4,6 +4,7 @@ import com.dhu.port.entity.CrawlerForTouTiao;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -18,20 +19,22 @@ public interface CrawlerForTouTiaoMapper {
             @Result(property = "keyWord", column = "key_word"),
             @Result(property = "classify", column = "classify"),
             @Result(property = "isActive", column = "is_active"),
-            @Result(property = "information", column = "information")
+            @Result(property = "information", column = "information"),
+            @Result(property = "hotDegree", column = "hot_degree")
     })
     List<CrawlerForTouTiao> queryAll();
 
-    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 ORDER BY datachange_createtime DESC LIMIT 0,100")
+    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 ORDER BY datachange_createtime DESC, id DESC LIMIT 0," +
+            "100")
     @ResultMap("crawlerTouTiaoMapper")
     List<CrawlerForTouTiao> queryForCache();
 
-    @Select("SELECT * FROM crawler_toutiao ORDER BY datachange_createtime DESC LIMIT #{offset},#{rows}")
+    @Select("SELECT * FROM crawler_toutiao ORDER BY datachange_createtime DESC, id DESC LIMIT #{offset},#{rows}")
     @ResultMap("crawlerTouTiaoMapper")
-    List<CrawlerForTouTiao> queryByPages(@Param("offset")Integer offset,@Param("rows")Integer rows);
+    List<CrawlerForTouTiao> queryByPages(@Param("offset") Integer offset, @Param("rows") Integer rows);
 
-    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 AND key_word LIKE #{keys} ORDER BY datachange_createtime" +
-            " DESC LIMIT #{offset},#{rows}")
+    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 AND key_word LIKE #{keys} ORDER BY " +
+            "datachange_createtime DESC, id DESC LIMIT #{offset},#{rows}")
     @ResultMap("crawlerTouTiaoMapper")
     List<CrawlerForTouTiao> queryByPagesWithKeyWord(@Param("keys") String keys, @Param("offset") Integer offset, @Param
             ("rows") Integer rows);
@@ -43,4 +46,11 @@ public interface CrawlerForTouTiaoMapper {
     @ResultMap("crawlerTouTiaoMapper")
     CrawlerForTouTiao queryById(@Param("id") Long id);
 
+    @Select("SELECT COUNT(*) FROM crawler_toutiao WHERE is_active = 1")
+    Long queryCount();
+
+    @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 AND datachange_createtime > #{today} ORDER BY " +
+            "hot_degree DESC,id DESC LIMIT 20")
+    @ResultMap("crawlerTouTiaoMapper")
+    List<CrawlerForTouTiao> queryHot(@Param("today")String today);
 }

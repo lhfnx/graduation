@@ -1,16 +1,15 @@
-package com.dhu.port.entity;
+package com.dhu.model.VO.WeiBo;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Setter
 @Getter
 @ToString
-public class CrawlerForTouTiao implements Serializable {
+public class WeiBoVO {
     private Long id;
     private String title;
     private String summary;
@@ -20,5 +19,4 @@ public class CrawlerForTouTiao implements Serializable {
     private Integer classify;
     private Boolean isActive;
     private String information;
-    private Integer hotDegree;
 }

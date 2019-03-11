@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 @Component
-public class CacheSrevice implements InitializingBean {
+public class CacheService implements InitializingBean {
     @Autowired
     private WeiBoRepository weiBoRepository;
 

@@ -11,13 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 @Controller
-@RequestMapping("api")
-public class TestController {
-    @Autowired
-    WeiBoService weiBoService;
-    @RequestMapping(value = "/test",method = RequestMethod.GET)
+public class HomeController {
+
+    @RequestMapping(value = "/home",method = RequestMethod.GET)
     public String test(){
-        List<CrawlerForWeiBo> weiBo = weiBoService.getInformationFromCache(1);
         return "welcome";
     }
 }

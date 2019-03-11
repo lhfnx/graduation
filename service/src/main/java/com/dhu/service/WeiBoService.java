@@ -1,14 +1,20 @@
 package com.dhu.service;
 
+import com.dhu.model.DO.HotDO;
+import com.dhu.model.DO.ListShowDO;
+import com.dhu.model.VO.WeiBo.WeiBoListVO;
+import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.port.entity.CrawlerForWeiBo;
 
 import java.util.List;
 
 public interface WeiBoService {
 
-    List<CrawlerForWeiBo> getInformationFromCache(Integer num);
+    List<WeiBoVO> getInformationFromCache(Integer num);
 
-    List<CrawlerForWeiBo> getInformationForList(String key, Integer offset, Integer rows);
+    WeiBoListVO getInformationForList(ListShowDO showDO);
 
     CrawlerForWeiBo getInformation(Long id);
+
+    List<WeiBoVO> getTodayInformationByHot(HotDO hotDO);
 }

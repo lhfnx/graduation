@@ -1,8 +1,14 @@
 package com.dhu.service.impl;
 
+import com.dhu.common.utils.BeanUtil;
+import com.dhu.common.utils.DateUtils;
+import com.dhu.model.DO.HotDO;
+import com.dhu.model.DO.ListShowDO;
+import com.dhu.model.VO.WeiBo.WeiBoListVO;
+import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.port.entity.CrawlerForWeiBo;
 import com.dhu.port.repository.WeiBoRepository;
-import com.dhu.service.CacheSrevice;
+import com.dhu.service.CacheService;
 import com.dhu.service.WeiBoService;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -12,11 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Comparator;
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class WeiBoServiceImpl implements WeiBoService {
@@ -27,25 +30,37 @@ public class WeiBoServiceImpl implements WeiBoService {
     private WeiBoRepository weiBoRepository;
 
     @Autowired
-    private CacheSrevice cacheSrevice;
+    private CacheService cacheService;
 
     @Override
-    public List<CrawlerForWeiBo> getInformationFromCache(Integer num) {
-        List<CrawlerForWeiBo> weiBos = cacheSrevice.getWeiBoCache();
-        if (CollectionUtils.isEmpty(weiBos) || num > weiBos.size()) {
-            return weiBos;
+    public List<WeiBoVO> getInformationFromCache(Integer num) {
+        List<CrawlerForWeiBo> weiBos = cacheService.getWeiBoCache();
+        List<WeiBoVO> cacheVOS = Lists.newArrayList();
+        BeanUtil.copyProperties(weiBos, cacheVOS);
+        if (CollectionUtils.isEmpty(cacheVOS) || num > cacheVOS.size()) {
+            return cacheVOS;
         }
-        return weiBos.subList(0, num);
+        return cacheVOS.subList(0, num);
     }
 
 
     @Override
-    public List<CrawlerForWeiBo> getInformationForList(String key, Integer offset, Integer rows) {
-        if (StringUtils.isEmpty(key)) {
-            return weiBoRepository.queryByPages(offset, rows);
+    public WeiBoListVO getInformationForList(ListShowDO showDO) {
+        WeiBoListVO weiBoListVO = new WeiBoListVO();
+        List<CrawlerForWeiBo> weiBos = Lists.newArrayList();
+        if (StringUtils.isEmpty(showDO.getKey())) {
+            weiBos = weiBoRepository.queryByPages((showDO.getIndex() - 1) * showDO.getSize(), showDO.getSize());
         } else {
-            return weiBoRepository.queryByPagesWithKeyWord(key, offset, rows);
+            weiBos = weiBoRepository.queryByPagesWithKeyWord(showDO.getKey(), (showDO.getIndex() - 1) * showDO
+                    .getSize(), showDO.getSize());
         }
+        List<WeiBoVO> weiBoVOS = BeanUtil.copyProperties(weiBos, WeiBoVO.class);
+        weiBoListVO.setCurrentIndex(showDO.getIndex());
+        weiBoListVO.setMaxIndex(weiBoRepository.queryCount().intValue() / showDO.getSize() + weiBoRepository
+                .queryCount().intValue() % showDO.getSize() == 0 ? 0 : 1);
+        weiBoListVO.setSize(showDO.getSize());
+        weiBoListVO.setWeiBoVOS(weiBoVOS);
+        return weiBoListVO;
     }
 
     @Override
@@ -54,5 +69,16 @@ public class WeiBoServiceImpl implements WeiBoService {
             return weiBoRepository.queryById(id);
         }
         return null;
+    }
+
+    @Override
+    public List<WeiBoVO> getTodayInformationByHot(HotDO hotDO) {
+        List<CrawlerForWeiBo> crawlers = weiBoRepository.queryHot(new Timestamp(DateUtils.getTodayStart()));
+        List<WeiBoVO> cacheVOS = Lists.newArrayList();
+        BeanUtil.copyProperties(crawlers, cacheVOS);
+        if (CollectionUtils.isEmpty(cacheVOS) || hotDO.getNum() > cacheVOS.size()) {
+            return cacheVOS;
+        }
+        return cacheVOS.subList(0, hotDO.getNum());
     }
 }

@@ -36,6 +36,14 @@
 			<groupId>com.dhu</groupId>
 			<artifactId>port</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.dhu</groupId>
+			<artifactId>model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.dhu</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>

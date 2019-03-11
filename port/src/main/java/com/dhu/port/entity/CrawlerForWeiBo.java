@@ -20,4 +20,5 @@ public class CrawlerForWeiBo implements Serializable {
     private Integer classify;
     private Boolean isActive;
     private String information;
+    private Integer hotDegree;
 }
