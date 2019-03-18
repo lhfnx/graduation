@@ -19,7 +19,9 @@ public interface CrawlerForWeiBoMapper {
             @Result(property = "keyWord", column = "key_word"),
             @Result(property = "classify", column = "classify"),
             @Result(property = "isActive", column = "is_active"),
-            @Result(property = "information", column = "information")
+            @Result(property = "information", column = "information"),
+            @Result(property = "hotDegree", column = "hot_degree"),
+            @Result(property = "imgUrl", column = "img_url")
     })
     List<CrawlerForWeiBo> queryAll();
 
@@ -51,5 +53,5 @@ public interface CrawlerForWeiBoMapper {
     @Select("SELECT * FROM crawler_weibo WHERE is_active = 1 AND datachange_createtime > #{today} ORDER BY " +
             "hot_degree DESC,id DESC LIMIT 20")
     @ResultMap("crawlerWeiBoMapper")
-    List<CrawlerForWeiBo> queryHot(@Param("today")String today);
+    List<CrawlerForWeiBo> queryHot(@Param("today") String today);
 }

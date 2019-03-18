@@ -13,5 +13,5 @@ public class WeiBoListVO {
     private Integer currentIndex;
     private Integer maxIndex;
     private Integer size;
-    private List<WeiBoVO> weiBoVOS;
+    private List<WeiBoVO> voList;
 }

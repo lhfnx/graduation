@@ -14,5 +14,5 @@ public class TouTiaoListVO {
     private Integer currentIndex;
     private Integer maxIndex;
     private Integer size;
-    private List<TouTiaoVO> touTiaoVOS;
+    private List<TouTiaoVO> voList;
 }

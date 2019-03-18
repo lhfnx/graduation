@@ -1,5 +1,6 @@
 package com.dhu.model.VO.TouTiao;
 
+import com.dhu.model.DO.InformationDO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,5 +19,7 @@ public class TouTiaoVO {
     private String keyWord;
     private Integer classify;
     private Boolean isActive;
-    private String information;
+    private InformationDO informationDO;
+    private Integer hotDegree;
+    private String imgUrl;
 }

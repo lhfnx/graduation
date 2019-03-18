@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>头条</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="css/mystyle.css">
+    <link rel="stylesheet" href="css/pagination.css">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="bootstrap-paginator.js"></script>
+    <script type="text/javascript">
+        function paging(page, key) {
+            $.ajax({
+                type: "POST",
+                url: "/toutiao/list",
+                contentType: "application/json",
+                data: JSON.stringify({'size': 10, 'index': page, "key": key}),
+                success: function (msg) {
+                    //查询出来数据进行操作
+                    $(".news-list").html("");
+                    var str = "";
+                    for (var i = 0; i < msg.data.voList.length; i++) {
+                        str += "<div class=\"news-list-item clearfix\" id=\"1\">\n" +
+                            "                     <div class=\"col-sm-5\"><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
+                            "                     <div class=\"col-sm-7\">\n" +
+                            "                         <div class=\"title\">\n" +
+                            "                             <a href=\"" + msg.data.voList[i].connectUrl + "\">" + msg.data.voList[i].title + "</a>"
+                        str += "</div>\n" +
+                            "                         <div class=\"info\">\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.author + "</span> *\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.comment + "评论</span> *\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.reading + "阅读</span> *\n" +
+                            "                         </div>\n" +
+                            "                     </div>";
+                        str += "</div>";
+                    }
+                    str += "";
+                    //console.log(str);  //可以先开启这个看看能不能请求到数据
+                    $(".news-list").html(str);
+                    var pages = msg.data.maxIndex;//这里data里面有数据总量
+                    var element = $('#pageUl');//对应下面ul的ID
+                    var options = {
+                        bootstrapMajorVersion: 3,
+                        currentPage: page,//当前页面
+                        numberOfPages: 10,//一页显示几个按钮（在ul里面生成10个li）
+                        totalPages: pages //总页数
+                    }
+                    element.bootstrapPaginator(options);
+                }
+            });
+        }
+
+        function hotting(num) {
+            $.ajax({
+                type: "POST",
+                url: "/toutiao/hot",
+                contentType: "application/json",
+                data: JSON.stringify({'num': 10}),
+                success: function (msg) {
+                    //查询出来数据进行操作
+                    $(".list").html("");
+                    var str = "";
+                    for (var i = 0; i < msg.data.length; i++) {
+                        str += "<div class=\"list-item\">\n" +
+                            "                            <a class=\"title\">" + msg.data[i].title + "</a>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.reading +
+                            "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                        </div>";
+                    }
+                    str += "";
+                    //console.log(str);  //可以先开启这个看看能不能请求到数据
+                    $(".list").html(str);
+                }
+            });
+        }
+
+        window.onload = paging(1, "");
+        window.onload = hotting(10);
+    </script>
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">
+            </a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="index">首页</a></li>
+            <li><a href="weibo">微博</a></li>
+            <li><a href="toutiao">头条</a></li>
+            <li><a href="数据分析.html">数据分析</a></li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group side-bar">
+                <button class="list-group-item active">全部</button>
+                <button class="list-group-item">风控</button>
+                <button class="list-group-item">欺诈</button>
+                <button class="list-group-item">案例</button>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="news-list ">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="side-bar-card flag clearfix">
+                <div class="col-xs-5">
+                    <img src="img/1-1.png" style="width: 60px;height: 60px; ">
+                </div>
+                <div class="col-xs-7">
+                    <div>有害信息举报专区</div>
+                    <div>
+                        <small>举报电话：12377</small>
+                    </div>
+                </div>
+            </div>
+            <div class="side-bar-card ">
+                <div class="card-title">24小时热闻</div>
+                <div class="card-body">
+                    <div class="list">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<nav class="nav">
+    <ul class="pagination" id="pageUl">
+    </ul>
+</nav>
+<div class="footer">
+    @2017拴蛋头条，如有问题请联系15201858725.com 作者王花花
+</div>
+</body>
+</html>

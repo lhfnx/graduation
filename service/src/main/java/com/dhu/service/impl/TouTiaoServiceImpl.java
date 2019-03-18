@@ -2,7 +2,9 @@ package com.dhu.service.impl;
 
 import com.dhu.common.utils.BeanUtil;
 import com.dhu.common.utils.DateUtils;
+import com.dhu.common.utils.JsonUtils;
 import com.dhu.model.DO.HotDO;
+import com.dhu.model.DO.InformationDO;
 import com.dhu.model.DO.ListShowDO;
 import com.dhu.model.VO.TouTiao.TouTiaoListVO;
 import com.dhu.model.VO.TouTiao.TouTiaoVO;
@@ -20,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TouTiaoServiceImpl implements TouTiaoService {
@@ -35,8 +38,7 @@ public class TouTiaoServiceImpl implements TouTiaoService {
     @Override
     public List<TouTiaoVO> getInformationFromCache(Integer num) {
         List<CrawlerForTouTiao> touTiaos = cacheService.getTouTiaoCache();
-        List<TouTiaoVO> cacheVOS = Lists.newArrayList();
-        BeanUtil.copyProperties(touTiaos, cacheVOS);
+        List<TouTiaoVO> cacheVOS = touTiaos.stream().map(this::copyProperties).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(cacheVOS) || num > cacheVOS.size()) {
             return cacheVOS;
         }
@@ -54,12 +56,12 @@ public class TouTiaoServiceImpl implements TouTiaoService {
             touTiaos = touTiaoRepository.queryByPagesWithKeyWord(showDO.getKey(), (showDO.getIndex() - 1) * showDO
                     .getSize(), showDO.getSize());
         }
-        List<TouTiaoVO> weiBoVOS = BeanUtil.copyProperties(touTiaos, TouTiaoVO.class);
+        List<TouTiaoVO> weiBoVOS = touTiaos.stream().map(this::copyProperties).collect(Collectors.toList());
         touTiaoListVO.setCurrentIndex(showDO.getIndex());
-        touTiaoListVO.setMaxIndex(touTiaoRepository.queryCount().intValue() / showDO.getSize() + touTiaoRepository
-                .queryCount().intValue() % showDO.getSize() == 0 ? 0 : 1);
+        touTiaoListVO.setMaxIndex(touTiaoRepository.queryCount().intValue() / showDO.getSize() + (touTiaoRepository
+                .queryCount().intValue() % showDO.getSize() == 0 ? 0 : 1));
         touTiaoListVO.setSize(showDO.getSize());
-        touTiaoListVO.setTouTiaoVOS(weiBoVOS);
+        touTiaoListVO.setVoList(weiBoVOS);
         return touTiaoListVO;
     }
 
@@ -74,11 +76,20 @@ public class TouTiaoServiceImpl implements TouTiaoService {
     @Override
     public List<TouTiaoVO> getTodayInformationByHot(HotDO hotDO) {
         List<CrawlerForTouTiao> crawlers = touTiaoRepository.queryHot(new Timestamp(DateUtils.getTodayStart()));
-        List<TouTiaoVO> cacheVOS = Lists.newArrayList();
-        BeanUtil.copyProperties(crawlers, cacheVOS);
+        List<TouTiaoVO> cacheVOS = crawlers.stream().map(this::copyProperties).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(cacheVOS) || hotDO.getNum() > cacheVOS.size()) {
             return cacheVOS;
         }
         return cacheVOS.subList(0, hotDO.getNum());
+    }
+
+    private TouTiaoVO copyProperties(CrawlerForTouTiao crawler) {
+        TouTiaoVO vo = BeanUtil.copyProperties(crawler, TouTiaoVO.class);
+        if (StringUtils.isNotEmpty(crawler.getInformation())) {
+            vo.setInformationDO(JsonUtils.deSerialize(crawler.getInformation(), InformationDO.class));
+        } else {
+            vo.setInformationDO(new InformationDO());
+        }
+        return vo;
     }
 }

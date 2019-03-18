@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="css/mystyle.css">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function caching(num) {
+            $.ajax({
+                type: "POST",
+                url: "/weibo/cache",
+                contentType: "application/json",
+                data: JSON.stringify({'num': num}),
+                success: function (msg) {
+                    //查询出来数据进行操作
+                    $(".news-list").html("");
+                    var str = "";
+                    for (var i = 0; i < msg.data.length; i++) {
+                        str += "<div class=\"news-list-item clearfix\" id=\"1\">\n" +
+                            "                     <div class=\"col-sm-5\"><img src=\"" + msg.data[i].imgUrl + "\"> </div>\n" +
+                            "                     <div class=\"col-sm-7\">\n" +
+                            "                         <div class=\"title\">\n" +
+                            "                             <a href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>"
+                        str += "</div>\n" +
+                            "                         <div class=\"info\">\n" +
+                            "                             <span>" + msg.data[i].informationDO.author + "</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.comment + "评论</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.reading + "阅读</span> *\n" +
+                            "                         </div>\n" +
+                            "                     </div>";
+                        str += "</div>";
+                    }
+                    str += "";
+                    //console.log(str);  //可以先开启这个看看能不能请求到数据
+                    $(".news-list").html(str);
+                }
+
+            });
+            $.ajax({
+                type: "POST",
+                url: "/toutiao/cache",
+                contentType: "application/json",
+                data: JSON.stringify({'num': num}),
+                success: function (msg) {
+                    //查询出来数据进行操作
+                    $(".news-list2").html("");
+                    var str = "";
+                    for (var i = 0; i < msg.data.length; i++) {
+                        str += "<div class=\"news-list-item clearfix\" id=\"1\">\n" +
+                            "                     <div class=\"col-sm-5\"><img src=\"" + msg.data[i].imgUrl + "\"> </div>\n" +
+                            "                     <div class=\"col-sm-7\">\n" +
+                            "                         <div class=\"title\">\n" +
+                            "                             <a href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>"
+                        str += "</div>\n" +
+                            "                         <div class=\"info\">\n" +
+                            "                             <span>" + msg.data[i].informationDO.author + "</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.comment + "评论</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.reading + "阅读</span> *\n" +
+                            "                         </div>\n" +
+                            "                     </div>";
+                        str += "</div>";
+                    }
+                    str += "";
+                    //console.log(str);  //可以先开启这个看看能不能请求到数据
+                    $(".news-list2").html(str);
+                }
+            });
+        }
+        window.onload = caching(10);
+    </script>
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">
+            </a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="index">首页</a></li>
+            <li><a href="weibo">微博</a></li>
+            <li><a href="toutiao">头条</a></li>
+            <li><a href="数据分析.html">数据分析</a></li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="news-list ">
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="news-list2 ">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="side-bar-card flag clearfix">
+                <div class="col-xs-5">
+                    <img src="img/1-1.png" style="width: 60px;height: 60px; ">
+                </div>
+                <div class="col-xs-7">
+                    <div>有害信息举报专区</div>
+                    <div>
+                        <small>举报电话：12377</small>
+                    </div>
+                </div>
+            </div>
+            <div class="side-bar-card ">
+                <div class="card-title">24小时热闻</div>
+                <div class="card-body">
+                    <div class="list">
+                        <div class="list-item">
+                            <a class="title">dsdknkjsdad</a>
+                            <div class="desc">15k阅读 1k评论</div>
+                        </div>
+                        <div class="list-item">
+                            <a class="title">dsdknkjsdad</a>
+                            <div class="desc">15k阅读 1k评论</div>
+                        </div>
+                        <div class="list-item">
+                            <a class="title">dsdknkjsdadjkla</a>
+                            <div class="desc">15k阅读 1k评论</div>
+                        </div>
+                        <div class="list-item">
+                            <a class="title">dsdknkjsdadjd</a>
+                            <div class="desc">15k阅读 1k评论</div>
+                        </div>
+                        <div class="list-item">
+                            <a class="title">dsdknkjsdadjkl</a>
+                            <div class="desc">15k阅读 1k评论</div>
+                        </div>
+                        <div class="list-item">
+                            <a class="title">dsdknkjsdadjkl</a>
+                            <div class="desc">15k阅读 1k评论</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    @2017拴蛋头条，如有问题请联系15201858725.com 作者王花花
+</div>
+</body>
+</html>

@@ -13,8 +13,14 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    @RequestMapping(value = "/home",method = RequestMethod.GET)
-    public String test(){
-        return "welcome";
+    @RequestMapping(value = "/index",method = RequestMethod.GET)
+    public String index(){
+        return "index";
     }
+
+    @RequestMapping(value = "/weibo",method = RequestMethod.GET)
+    public String weibo(){return "weibo";};
+
+    @RequestMapping(value = "/toutiao",method = RequestMethod.GET)
+    public String toutiao(){return "toutiao";};
 }
