@@ -2,7 +2,7 @@ package com.dhu.port.repository;
 
 import com.dhu.port.entity.CrawlerForWeiBo;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface WeiBoRepository {
@@ -20,5 +20,7 @@ public interface WeiBoRepository {
 
     Long queryCount();
 
-    List<CrawlerForWeiBo> queryHot(Timestamp today);
+    List<CrawlerForWeiBo> queryHot(LocalDateTime today);
+
+    int batchInsertCrawler(List<CrawlerForWeiBo> crawlers);
 }

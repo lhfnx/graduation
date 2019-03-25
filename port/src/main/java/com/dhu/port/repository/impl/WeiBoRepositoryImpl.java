@@ -1,19 +1,26 @@
 package com.dhu.port.repository.impl;
 
+import com.dhu.common.utils.JsonUtils;
 import com.dhu.port.entity.CrawlerForWeiBo;
 import com.dhu.port.mapper.CrawlerForWeiBoMapper;
 import com.dhu.port.repository.WeiBoRepository;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Transactional
 @Service
 public class WeiBoRepositoryImpl implements WeiBoRepository {
+    private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private CrawlerForWeiBoMapper weiBoMapper;
 
@@ -46,7 +53,7 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
         if (rows == null) {
             rows = 1;
         }
-        return weiBoMapper.queryByPagesWithKeyWord(keys, offset, rows);
+        return weiBoMapper.queryByPagesWithKeyWord("%" + keys + "%", offset, rows);
     }
 
     @Override
@@ -68,9 +75,28 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
     }
 
     @Override
-    public List<CrawlerForWeiBo> queryHot(Timestamp today) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = df.format(today);
+    public List<CrawlerForWeiBo> queryHot(LocalDateTime today) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String time = today.minusDays(1L).format(timeFormatter);
         return weiBoMapper.queryHot(time);
+    }
+
+    @Override
+    public int batchInsertCrawler(List<CrawlerForWeiBo> crawlers) {
+        if (CollectionUtils.isEmpty(crawlers)) {
+            return 0;
+        }
+        int count = 0;
+        for (CrawlerForWeiBo weiBo : crawlers) {
+            try {
+                int id = weiBoMapper.insertCrawler(weiBo);
+                if (id > 0) {
+                    count++;
+                }
+            } catch (Exception e) {
+                logger.error("微博爬虫存储失败", "数据：" + JsonUtils.serialize(weiBo), e);
+            }
+        }
+        return count;
     }
 }

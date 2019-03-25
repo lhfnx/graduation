@@ -23,12 +23,14 @@
                             "                     <div class=\"col-sm-5\"><img src=\"" + msg.data[i].imgUrl + "\"> </div>\n" +
                             "                     <div class=\"col-sm-7\">\n" +
                             "                         <div class=\"title\">\n" +
-                            "                             <a href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>"
+                            "                             <a href=\"" + msg.data[i].connectUrl + "\" target=\"_blank\">" + msg.data[i].summary + "</a>"
                         str += "</div>\n" +
                             "                         <div class=\"info\">\n" +
                             "                             <span>" + msg.data[i].informationDO.author + "</span> *\n" +
                             "                             <span>" + msg.data[i].informationDO.comment + "评论</span> *\n" +
-                            "                             <span>" + msg.data[i].informationDO.reading + "阅读</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.like + "点赞</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.favorite + "收藏</span> *\n" +
+                            "                             <span>" + msg.data[i].informationDO.forward + "转发</span> *\n" +
                             "                         </div>\n" +
                             "                     </div>";
                         str += "</div>";
@@ -53,7 +55,7 @@
                             "                     <div class=\"col-sm-5\"><img src=\"" + msg.data[i].imgUrl + "\"> </div>\n" +
                             "                     <div class=\"col-sm-7\">\n" +
                             "                         <div class=\"title\">\n" +
-                            "                             <a href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>"
+                            "                             <a href=\"" + msg.data[i].connectUrl + "\" target=\"_blank\">" + msg.data[i].title + "</a>"
                         str += "</div>\n" +
                             "                         <div class=\"info\">\n" +
                             "                             <span>" + msg.data[i].informationDO.author + "</span> *\n" +

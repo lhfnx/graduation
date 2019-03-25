@@ -25,12 +25,14 @@
                             "                     <div class=\"col-sm-5\"><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
                             "                     <div class=\"col-sm-7\">\n" +
                             "                         <div class=\"title\">\n" +
-                            "                             <a href=\"" + msg.data.voList[i].connectUrl + "\">" + msg.data.voList[i].title + "</a>"
+                            "                             <a href=\"" + msg.data.voList[i].connectUrl + "\" target=\"_blank\">" + msg.data.voList[i].summary + "</a>"
                         str += "</div>\n" +
                             "                         <div class=\"info\">\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.author + "</span> *\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.comment + "评论</span> *\n" +
-                            "                             <span>" + msg.data.voList[i].informationDO.reading + "阅读</span> *\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.like + "点赞</span> *\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.favorite + "收藏</span> *\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.forward + "转发</span> *\n" +
                             "                         </div>\n" +
                             "                     </div>";
                         str += "</div>";
@@ -50,6 +52,7 @@
                 }
             });
         };
+
         function hotting(num) {
             $.ajax({
                 type: "POST",
@@ -62,9 +65,8 @@
                     var str = "";
                     for (var i = 0; i < msg.data.length; i++) {
                         str += "<div class=\"list-item\">\n" +
-                            "                            <a class=\"title\">" + msg.data[i].title + "</a>\n" +
-                            "                            <div class=\"desc\">" + msg.data[i].informationDO.reading +
-                            "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].summary + "</a>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
                             "                        </div>";
                     }
                     str += "";
@@ -73,6 +75,50 @@
                 }
             });
         }
+
+        $(function () {
+            $('.col-md-2').on("click", "#1", function () {
+                $(".col-md-2").html("");
+                var str = "";
+                str += "<div class=\"list-group side-bar\">\n" +
+                    "                <button class=\"list-group-item active\" id=\"1\">全部</button>\n" +
+                    "                <button class=\"list-group-item\" id=\"2\">风控</button>\n" +
+                    "                <button class=\"list-group-item\" id=\"3\">诈骗</button>\n" +
+                    "                <button class=\"list-group-item\"  id=\"4\">案例</button>\n" +
+                    "            </div>";
+                $(".col-md-2").html(str);
+                paging(1, "");
+            });
+        });
+        $(function () {
+            $('.col-md-2').on("click", "#2", function () {
+                $(".col-md-2").html("");
+                var str = "";
+                str += "<div class=\"list-group side-bar\">\n" +
+                    "                <button class=\"list-group-item\" id=\"1\">全部</button>\n" +
+                    "                <button class=\"list-group-item active\" id=\"2\">风控</button>\n" +
+                    "                <button class=\"list-group-item\" id=\"3\">诈骗</button>\n" +
+                    "                <button class=\"list-group-item\"  id=\"4\">案例</button>\n" +
+                    "            </div>";
+                $(".col-md-2").html(str);
+                paging(1, "风控");
+            });
+        });
+        $(function () {
+            $('.col-md-2').on("click", "#3", function () {
+                $(".col-md-2").html("");
+                var str = "";
+                str += "<div class=\"list-group side-bar\">\n" +
+                    "                <button class=\"list-group-item\" id=\"1\">全部</button>\n" +
+                    "                <button class=\"list-group-item\" id=\"2\">风控</button>\n" +
+                    "                <button class=\"list-group-item active\" id=\"3\">诈骗</button>\n" +
+                    "                <button class=\"list-group-item\"  id=\"4\">案例</button>\n" +
+                    "            </div>";
+                $(".col-md-2").html(str);
+                paging(1, "诈骗");
+            });
+        });
+
         window.onload = paging(1, "");
         window.onload = hotting(10)
     </script>
@@ -83,7 +129,7 @@
 <div class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="index" target="_blank">
             </a>
         </div>
         <ul class="nav navbar-nav">
@@ -99,10 +145,10 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group side-bar">
-                <button class="list-group-item active">全部</button>
-                <button class="list-group-item">风控</button>
-                <button class="list-group-item">欺诈</button>
-                <button class="list-group-item">案例</button>
+                <button class="list-group-item active" id="1">全部</button>
+                <button class="list-group-item" id="2">风控</button>
+                <button class="list-group-item" id="3">诈骗</button>
+                <button class="list-group-item" id="4">案例</button>
             </div>
         </div>
         <div class="col-md-7">

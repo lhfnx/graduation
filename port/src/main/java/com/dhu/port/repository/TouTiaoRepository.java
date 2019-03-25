@@ -2,7 +2,7 @@ package com.dhu.port.repository;
 
 import com.dhu.port.entity.CrawlerForTouTiao;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TouTiaoRepository {
@@ -20,5 +20,5 @@ public interface TouTiaoRepository {
 
     Long queryCount();
 
-    List<CrawlerForTouTiao> queryHot(Timestamp today);
+    List<CrawlerForTouTiao> queryHot(LocalDateTime today);
 }

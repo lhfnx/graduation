@@ -12,7 +12,6 @@ public interface CrawlerForWeiBoMapper {
     @Select("SELECT * FROM crawler_weibo WHERE is_active = 1 ORDER BY datachange_createtime DESC, id DESC")
     @Results(id = "crawlerWeiBoMapper", value = {
             @Result(property = "id", column = "id", id = true),
-            @Result(property = "title", column = "title"),
             @Result(property = "summary", column = "summary"),
             @Result(property = "connectUrl", column = "connect_url"),
             @Result(property = "DataChangeCreateTime", column = "datachange_createtime"),
@@ -54,4 +53,9 @@ public interface CrawlerForWeiBoMapper {
             "hot_degree DESC,id DESC LIMIT 20")
     @ResultMap("crawlerWeiBoMapper")
     List<CrawlerForWeiBo> queryHot(@Param("today") String today);
+
+    @Insert("INSERT INTO crawler_weibo(summary,connect_url,datachange_createtime,key_word,is_active,information,hot_degree,img_url) " +
+            "VALUES(#{summary},#{connectUrl},CURRENT_TIMESTAMP,#{keyWord},1,#{information},#{hotDegree},#{imgUrl})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    int insertCrawler(CrawlerForWeiBo weiBo);
 }

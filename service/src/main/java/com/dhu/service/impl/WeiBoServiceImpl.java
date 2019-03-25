@@ -1,7 +1,6 @@
 package com.dhu.service.impl;
 
 import com.dhu.common.utils.BeanUtil;
-import com.dhu.common.utils.DateUtils;
 import com.dhu.common.utils.JsonUtils;
 import com.dhu.model.DO.HotDO;
 import com.dhu.model.DO.InformationDO;
@@ -10,7 +9,7 @@ import com.dhu.model.VO.WeiBo.WeiBoListVO;
 import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.port.entity.CrawlerForWeiBo;
 import com.dhu.port.repository.WeiBoRepository;
-import com.dhu.service.CacheService;
+import com.dhu.port.repository.CacheService;
 import com.dhu.service.WeiBoService;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,7 +74,7 @@ public class WeiBoServiceImpl implements WeiBoService {
 
     @Override
     public List<WeiBoVO> getTodayInformationByHot(HotDO hotDO) {
-        List<CrawlerForWeiBo> crawlers = weiBoRepository.queryHot(new Timestamp(DateUtils.getTodayStart()));
+        List<CrawlerForWeiBo> crawlers = weiBoRepository.queryHot(LocalDateTime.now());
         List<WeiBoVO> cacheVOS = crawlers.stream().map(this::copyProperties).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(cacheVOS) || hotDO.getNum() > cacheVOS.size()) {
             return cacheVOS;

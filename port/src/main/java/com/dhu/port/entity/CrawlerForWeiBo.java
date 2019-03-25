@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @ToString
 public class CrawlerForWeiBo implements Serializable {
     private Long id;
-    private String title;
     private String summary;
     private String connectUrl;
     private Timestamp DataChangeCreateTime;

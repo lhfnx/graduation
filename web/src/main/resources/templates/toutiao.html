@@ -25,7 +25,7 @@
                             "                     <div class=\"col-sm-5\"><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
                             "                     <div class=\"col-sm-7\">\n" +
                             "                         <div class=\"title\">\n" +
-                            "                             <a href=\"" + msg.data.voList[i].connectUrl + "\">" + msg.data.voList[i].title + "</a>"
+                            "                             <a href=\" target=\"_blank\"" + msg.data.voList[i].connectUrl + "\">" + msg.data.voList[i].title + "</a>"
                         str += "</div>\n" +
                             "                         <div class=\"info\">\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.author + "</span> *\n" +
@@ -63,9 +63,8 @@
                     var str = "";
                     for (var i = 0; i < msg.data.length; i++) {
                         str += "<div class=\"list-item\">\n" +
-                            "                            <a class=\"title\">" + msg.data[i].title + "</a>\n" +
-                            "                            <div class=\"desc\">" + msg.data[i].informationDO.reading +
-                            "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.reading + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
                             "                        </div>";
                     }
                     str += "";

@@ -11,4 +11,6 @@ public class InformationDO {
     private String comment = "0";
     private String like = "0";
     private String reading = "0";
+    private String forward = "0";
+    private String favorite = "0";
 }

@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Transactional
@@ -68,9 +70,9 @@ public class TouTiaoRepositoryImpl implements TouTiaoRepository {
     }
 
     @Override
-    public List<CrawlerForTouTiao> queryHot(Timestamp today) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time = df.format(today);
+    public List<CrawlerForTouTiao> queryHot(LocalDateTime today) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String time = today.minusDays(1L).format(timeFormatter);
         return touTiaoMapper.queryHot(time);
     }
 }
