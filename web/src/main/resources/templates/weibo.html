@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>微博</title>
     <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="css/mystyle.css">
+    <link rel="stylesheet" href="css/myweibostyle.css">
     <link rel="stylesheet" href="css/pagination.css">
     <script src="jquery-3.3.1.min.js"></script>
     <script src="bootstrap.min.js"></script>
@@ -24,11 +24,11 @@
                         str += "<div class=\"news-list-item clearfix\" id=\"1\">\n" +
                             "                     <div class=\"col-sm-5\"><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
                             "                     <div class=\"col-sm-7\">\n" +
-                            "                         <div class=\"title\">\n" +
-                            "                             <a href=\"" + msg.data.voList[i].connectUrl + "\" target=\"_blank\">" + msg.data.voList[i].summary + "</a>"
+                            "                         <div class=\"titlew\">\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.author + "</span> \n";
                         str += "</div>\n" +
                             "                         <div class=\"info\">\n" +
-                            "                             <span>" + msg.data.voList[i].informationDO.author + "</span> *\n" +
+                            "                             <a href=\"" + msg.data.voList[i].connectUrl + "\" target=\"_blank\" class=\"summary\">" + msg.data.voList[i].summary + "</a><br>" +
                             "                             <span>" + msg.data.voList[i].informationDO.comment + "评论</span> *\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.like + "点赞</span> *\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.favorite + "收藏</span> *\n" +
@@ -46,9 +46,36 @@
                         bootstrapMajorVersion: 3,
                         currentPage: page,//当前页面
                         numberOfPages: 10,//一页显示几个按钮（在ul里面生成5个li）
-                        totalPages: pages //总页数
+                        totalPages: pages, //总页数
+                        onPageClicked:function (event, originalEvent, type, page) {
+                            var currentTarget = $(event.currentTarget);
+                            switch (type) {
+                                case "first":
+                                    currentTarget.bootstrapPaginator("showFirst");
+                                    paging(page,key);
+                                    break;
+                                //上一页
+                                case "prev":
+                                    currentTarget.bootstrapPaginator("showPrevious");
+                                    paging(page,key);
+                                    break;
+                                case "next":
+                                    currentTarget.bootstrapPaginator("showNext");
+                                    paging(page,key);
+                                    break;
+                                case "last":
+                                    currentTarget.bootstrapPaginator("showLast");
+                                    paging(page,key);
+                                    break;
+                                case "page":
+                                    currentTarget.bootstrapPaginator("show", page);
+                                    paging(page,key);
+                                    break;
+                            }
+                        }
                     }
                     element.bootstrapPaginator(options);
+                    scrollTo(0,0);
                 }
             });
         };
@@ -65,7 +92,7 @@
                     var str = "";
                     for (var i = 0; i < msg.data.length; i++) {
                         str += "<div class=\"list-item\">\n" +
-                            "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].summary + "</a>\n" +
+                            "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].summary.slice(0, 50) + "..." + "</a>\n" +
                             "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
                             "                        </div>";
                     }
@@ -84,7 +111,6 @@
                     "                <button class=\"list-group-item active\" id=\"1\">全部</button>\n" +
                     "                <button class=\"list-group-item\" id=\"2\">风控</button>\n" +
                     "                <button class=\"list-group-item\" id=\"3\">诈骗</button>\n" +
-                    "                <button class=\"list-group-item\"  id=\"4\">案例</button>\n" +
                     "            </div>";
                 $(".col-md-2").html(str);
                 paging(1, "");
@@ -98,7 +124,6 @@
                     "                <button class=\"list-group-item\" id=\"1\">全部</button>\n" +
                     "                <button class=\"list-group-item active\" id=\"2\">风控</button>\n" +
                     "                <button class=\"list-group-item\" id=\"3\">诈骗</button>\n" +
-                    "                <button class=\"list-group-item\"  id=\"4\">案例</button>\n" +
                     "            </div>";
                 $(".col-md-2").html(str);
                 paging(1, "风控");
@@ -112,7 +137,6 @@
                     "                <button class=\"list-group-item\" id=\"1\">全部</button>\n" +
                     "                <button class=\"list-group-item\" id=\"2\">风控</button>\n" +
                     "                <button class=\"list-group-item active\" id=\"3\">诈骗</button>\n" +
-                    "                <button class=\"list-group-item\"  id=\"4\">案例</button>\n" +
                     "            </div>";
                 $(".col-md-2").html(str);
                 paging(1, "诈骗");
@@ -120,7 +144,7 @@
         });
 
         window.onload = paging(1, "");
-        window.onload = hotting(10)
+        window.onload = hotting(10);
     </script>
     <link rel="stylesheet" href="css/pagination.css">
     <script src="bootstrap-paginator.js"></script>
@@ -136,7 +160,7 @@
             <li><a href="index">首页</a></li>
             <li><a href="weibo">微博</a></li>
             <li><a href="toutiao">头条</a></li>
-            <li><a href="数据分析">数据分析</a></li>
+            <li><a href="analysis">数据分析</a></li>
 
         </ul>
     </div>
@@ -148,7 +172,6 @@
                 <button class="list-group-item active" id="1">全部</button>
                 <button class="list-group-item" id="2">风控</button>
                 <button class="list-group-item" id="3">诈骗</button>
-                <button class="list-group-item" id="4">案例</button>
             </div>
         </div>
         <div class="col-md-7">

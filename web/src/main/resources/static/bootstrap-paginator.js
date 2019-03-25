@@ -219,33 +219,33 @@
             this.$element.trigger("page-clicked", [event, type, page]);
 
         },
-        onPageClicked: function (event, originalEvent, type, page) {
-            //show the corresponding page and retrieve the newly built item related to the page clicked before for the event return
-            var currentTarget = $(event.currentTarget);
-            switch (type) {
-                case "first":
-                    currentTarget.bootstrapPaginator("showFirst");
-                    paging(page);
-                    break;
-                //上一页
-                case "prev":
-                    currentTarget.bootstrapPaginator("showPrevious");
-                    paging(page);
-                    break;
-                case "next":
-                    currentTarget.bootstrapPaginator("showNext");
-                    paging(page);
-                    break;
-                case "last":
-                    currentTarget.bootstrapPaginator("showLast");
-                    paging(page);
-                    break;
-                case "page":
-                    currentTarget.bootstrapPaginator("show", page);
-                    paging(page);
-                    break;
-            }
-        },
+        // onPageClicked: function (event, originalEvent, type, page) {
+        //     //show the corresponding page and retrieve the newly built item related to the page clicked before for the event return
+        //     var currentTarget = $(event.currentTarget);
+        //     switch (type) {
+        //         case "first":
+        //             currentTarget.bootstrapPaginator("showFirst");
+        //             paging(page);
+        //             break;
+        //         //上一页
+        //         case "prev":
+        //             currentTarget.bootstrapPaginator("showPrevious");
+        //             paging(page);
+        //             break;
+        //         case "next":
+        //             currentTarget.bootstrapPaginator("showNext");
+        //             paging(page);
+        //             break;
+        //         case "last":
+        //             currentTarget.bootstrapPaginator("showLast");
+        //             paging(page);
+        //             break;
+        //         case "page":
+        //             currentTarget.bootstrapPaginator("show", page);
+        //             paging(page);
+        //             break;
+        //     }
+        // },
         /**
          * Renders the paginator according to the internal properties and the settings.
          *

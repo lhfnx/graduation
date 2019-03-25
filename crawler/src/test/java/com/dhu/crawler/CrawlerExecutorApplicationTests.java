@@ -81,7 +81,7 @@ public class CrawlerExecutorApplicationTests {
 
 	@Test
     public void testAnsj(){
-	    String str = "深圳市公安局龙华分局";
+	    String str = "深圳市公安部龙华分局";
 		System.out.println(ToAnalysis.parse(str));
 		System.out.println(BaseAnalysis.parse(str));
 		System.out.println(NlpAnalysis.parse(str));

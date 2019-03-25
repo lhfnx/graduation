@@ -3,6 +3,7 @@ package com.dhu.port.repository.impl;
 import com.dhu.port.entity.CrawlerForTouTiao;
 import com.dhu.port.mapper.CrawlerForTouTiaoMapper;
 import com.dhu.port.repository.TouTiaoRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,8 +66,13 @@ public class TouTiaoRepositoryImpl implements TouTiaoRepository {
     }
 
     @Override
-    public Long queryCount() {
-        return touTiaoMapper.queryCount();
+    public Long queryCount(String keys) {
+        if (StringUtils.isEmpty(keys)) {
+            return touTiaoMapper.queryCount();
+        } else {
+            return touTiaoMapper.queryCountByKeys(keys);
+        }
+
     }
 
     @Override

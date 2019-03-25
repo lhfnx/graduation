@@ -46,9 +46,10 @@ public class CrawlerExecutor {
     @Autowired
     private CacheService cacheService;
 
-    @Scheduled(cron = "0 0 0/3 * * ?")
+    @Scheduled(cron = "0 0 0/5 * * ?")
     public void execute() {
         try {
+            cacheService.refreshConfig();
             logger.info("微博爬虫开始");
             getConfig();
             Map<String, String> cookie = CookieUtils.getCookie();

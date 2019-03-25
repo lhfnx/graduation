@@ -57,8 +57,8 @@ public class TouTiaoServiceImpl implements TouTiaoService {
         }
         List<TouTiaoVO> weiBoVOS = touTiaos.stream().map(this::copyProperties).collect(Collectors.toList());
         touTiaoListVO.setCurrentIndex(showDO.getIndex());
-        touTiaoListVO.setMaxIndex(touTiaoRepository.queryCount().intValue() / showDO.getSize() + (touTiaoRepository
-                .queryCount().intValue() % showDO.getSize() == 0 ? 0 : 1));
+        touTiaoListVO.setMaxIndex(touTiaoRepository.queryCount(showDO.getKey()).intValue() / showDO.getSize() + (touTiaoRepository
+                .queryCount(showDO.getKey()).intValue() % showDO.getSize() == 0 ? 0 : 1));
         touTiaoListVO.setSize(showDO.getSize());
         touTiaoListVO.setVoList(weiBoVOS);
         return touTiaoListVO;

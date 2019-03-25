@@ -2,9 +2,9 @@ package com.dhu.service.impl;
 
 import com.dhu.common.utils.BeanUtil;
 import com.dhu.common.utils.JsonUtils;
-import com.dhu.model.DO.HotDO;
-import com.dhu.model.DO.InformationDO;
-import com.dhu.model.DO.ListShowDO;
+import com.dhu.common.utils.StringToCollectionUtils;
+import com.dhu.model.DO.*;
+import com.dhu.model.VO.WeiBo.WeiBoAnaVO;
 import com.dhu.model.VO.WeiBo.WeiBoListVO;
 import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.port.entity.CrawlerForWeiBo;
@@ -12,15 +12,16 @@ import com.dhu.port.repository.WeiBoRepository;
 import com.dhu.port.repository.CacheService;
 import com.dhu.service.WeiBoService;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,8 @@ public class WeiBoServiceImpl implements WeiBoService {
 
     @Autowired
     private CacheService cacheService;
+
+    private List<String> otherFilter = Lists.newArrayList("w","v","nz","d","c","cc","f","m","mg","Mg","mq","q","qg","qt","qv");
 
     @Override
     public List<WeiBoVO> getInformationFromCache(Integer num) {
@@ -57,8 +60,8 @@ public class WeiBoServiceImpl implements WeiBoService {
         }
         List<WeiBoVO> weiBoVOS = weiBos.stream().map(this::copyProperties).collect(Collectors.toList());
         weiBoListVO.setCurrentIndex(showDO.getIndex());
-        weiBoListVO.setMaxIndex(weiBoRepository.queryCount().intValue() / showDO.getSize() + (weiBoRepository
-                .queryCount().intValue() % showDO.getSize() == 0 ? 0 : 1));
+        weiBoListVO.setMaxIndex(weiBoRepository.queryCount(showDO.getKey()).intValue() / showDO.getSize() + (weiBoRepository
+                .queryCount(showDO.getKey()).intValue() % showDO.getSize() == 0 ? 0 : 1));
         weiBoListVO.setSize(showDO.getSize());
         weiBoListVO.setVoList(weiBoVOS);
         return weiBoListVO;
@@ -86,9 +89,46 @@ public class WeiBoServiceImpl implements WeiBoService {
         WeiBoVO vo = BeanUtil.copyProperties(crawler, WeiBoVO.class);
         if (StringUtils.isNotEmpty(crawler.getInformation())) {
             vo.setInformationDO(JsonUtils.deSerialize(crawler.getInformation(), InformationDO.class));
-        }else {
+        } else {
             vo.setInformationDO(new InformationDO());
         }
         return vo;
+    }
+
+    @Override
+    public List<WeiBoAnaVO> getAnalysis(AnalysisDO analysisDO) {
+        List<String> keyWords = weiBoRepository.queryKeyWord(LocalDateTime.now().minusDays(analysisDO.getDays()));
+        if (CollectionUtils.isEmpty(keyWords)) {
+            return Lists.newArrayList();
+        }
+        List<KeyWordDO> keyWordDOList = Lists.newArrayList();
+        keyWords.forEach(k -> {
+            keyWordDOList.addAll(JsonUtils.jsonToList(k, KeyWordDO.class));
+        });
+        Map<String, Integer> map = Maps.newHashMap();
+        keyWordDOList.forEach(k -> {
+            if (CollectionUtils.isEmpty(analysisDO.getNatures()) && !otherFilter.contains(k.getNature())){
+                map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
+            }else if (analysisDO.getNatures().contains(k.getNature())) {
+                map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
+            }
+        });
+        List<String> filterKey = StringToCollectionUtils.stringToList(cacheService.getConfig("FilterKey"));
+        List<WeiBoAnaVO> sorted = map.entrySet().stream()
+                .map(this::convert2WeiBoAnaVO)
+                .filter(w -> !filterKey.contains(w.getName()))
+                .sorted(Comparator.comparingInt(WeiBoAnaVO::getFeq).reversed())
+                .collect(Collectors.toList());
+        if (sorted.size()<analysisDO.getNum()){
+            return sorted;
+        }
+        return sorted.subList(0, analysisDO.getNum());
+    }
+
+    private WeiBoAnaVO convert2WeiBoAnaVO(Map.Entry<String, Integer> entry) {
+        WeiBoAnaVO anaVO = new WeiBoAnaVO();
+        anaVO.setName(entry.getKey());
+        anaVO.setFeq(entry.getValue());
+        return anaVO;
     }
 }

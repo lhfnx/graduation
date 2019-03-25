@@ -29,19 +29,24 @@
     max-width: 100%;
     border-radius: 3px;
 }
-.title a{
+.titlew span{
     text-decoration: none;
     color: #444444;
     font-size: 18px;
     font-weight: bold;
     line-height: 1.5;
  }
-.title a:hover{
-    color:#337ab7 ;
-}
 .news-list-item .info{
     margin-top: 5px;
     color: #888;
+}
+.info a{
+    text-decoration:none;
+    color:#444444
+}
+.info a:hover{
+    text-decoration:none;
+    color:#337ab7
 }
 .info img{
     display: inline-block;
@@ -138,4 +143,11 @@
 
 .carousel-control.right, .carousel-control.left{
     background-image: none;
+}
+
+.col-sm-5{
+    width: 20%;
+}
+.col-sm-7{
+    width: 75%;
 }

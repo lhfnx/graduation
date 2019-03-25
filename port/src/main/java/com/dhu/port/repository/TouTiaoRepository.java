@@ -18,7 +18,7 @@ public interface TouTiaoRepository {
 
     CrawlerForTouTiao queryById(Long id);
 
-    Long queryCount();
+    Long queryCount(String keys);
 
     List<CrawlerForTouTiao> queryHot(LocalDateTime today);
 }

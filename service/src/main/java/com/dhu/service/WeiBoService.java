@@ -1,7 +1,9 @@
 package com.dhu.service;
 
+import com.dhu.model.DO.AnalysisDO;
 import com.dhu.model.DO.HotDO;
 import com.dhu.model.DO.ListShowDO;
+import com.dhu.model.VO.WeiBo.WeiBoAnaVO;
 import com.dhu.model.VO.WeiBo.WeiBoListVO;
 import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.port.entity.CrawlerForWeiBo;
@@ -17,4 +19,6 @@ public interface WeiBoService {
     CrawlerForWeiBo getInformation(Long id);
 
     List<WeiBoVO> getTodayInformationByHot(HotDO hotDO);
+
+    List<WeiBoAnaVO> getAnalysis(AnalysisDO analysisDO);
 }

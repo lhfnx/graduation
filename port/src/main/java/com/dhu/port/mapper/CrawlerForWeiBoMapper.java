@@ -49,6 +49,9 @@ public interface CrawlerForWeiBoMapper {
     @Select("SELECT COUNT(*) FROM crawler_weibo WHERE is_active = 1")
     Long queryCount();
 
+    @Select("SELECT COUNT(*) FROM crawler_weibo WHERE is_active = 1 AND key_word LIKE #{keys}")
+    Long queryCountByKeys(@Param("keys") String keys);
+
     @Select("SELECT * FROM crawler_weibo WHERE is_active = 1 AND datachange_createtime > #{today} ORDER BY " +
             "hot_degree DESC,id DESC LIMIT 20")
     @ResultMap("crawlerWeiBoMapper")
@@ -58,4 +61,7 @@ public interface CrawlerForWeiBoMapper {
             "VALUES(#{summary},#{connectUrl},CURRENT_TIMESTAMP,#{keyWord},1,#{information},#{hotDegree},#{imgUrl})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertCrawler(CrawlerForWeiBo weiBo);
+
+    @Select("SELECT key_word FROM crawler_weibo WHERE is_active = 1 AND datachange_createtime > #{today}")
+    List<String> queryKeyWord(@Param("today")String today);
 }

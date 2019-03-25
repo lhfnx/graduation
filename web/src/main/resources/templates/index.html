@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" >
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="css/mystyle.css">
     <script src="jquery-3.3.1.min.js"></script>
@@ -71,21 +72,66 @@
                 }
             });
         }
+
+        function hotting(num) {
+            $.ajax({
+                type: "POST",
+                url: "/weibo/hot",
+                contentType: "application/json",
+                data: JSON.stringify({'num': 10}),
+                success: function (msg) {
+                    //查询出来数据进行操作
+                    $("#weibo").html("");
+                    var str = "";
+                    for (var i = 0; i < msg.data.length; i++) {
+                        str += "<div class=\"list-item\">\n" +
+                            "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].summary.slice(0,50) + "</a>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                        </div>";
+                    }
+                    str += "";
+                    //console.log(str);  //可以先开启这个看看能不能请求到数据
+                    $("#weibo").html(str);
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "/toutiao/hot",
+                contentType: "application/json",
+                data: JSON.stringify({'num': 10}),
+                success: function (msg) {
+                    //查询出来数据进行操作
+                    $("#toutiao").html("");
+                    var str = "";
+                    for (var i = 0; i < msg.data.length; i++) {
+                        str += "<div class=\"list-item\">\n" +
+                            "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.reading + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                        </div>";
+                    }
+                    str += "";
+                    //console.log(str);  //可以先开启这个看看能不能请求到数据
+                    $("#toutiao").html(str);
+                }
+            });
+        }
+
         window.onload = caching(10);
+        window.onload = hotting(10);
     </script>
 </head>
 <body>
 <div class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="index">
             </a>
         </div>
         <ul class="nav navbar-nav">
             <li><a href="index">首页</a></li>
             <li><a href="weibo">微博</a></li>
             <li><a href="toutiao">头条</a></li>
-            <li><a href="数据分析.html">数据分析</a></li>
+            <li><a href="analysis">数据分析</a></li>
         </ul>
     </div>
 </div>
@@ -113,40 +159,43 @@
             </div>
             <div class="side-bar-card ">
                 <div class="card-title">24小时热闻</div>
-                <div class="card-body">
-                    <div class="list">
-                        <div class="list-item">
-                            <a class="title">dsdknkjsdad</a>
-                            <div class="desc">15k阅读 1k评论</div>
+                <div id="myCarousel" class="carousel slide">
+                    <!--轮播（Carousel）指标-->
+                    <!--<ol class="carousel-indicators" style="float: bottom">-->
+                    <!--<li data-target="#myCarousel" data-slide-to="0" class="active"></li>-->
+                    <!--<li data-target="#myCarousel" data-slide-to="1"></li>-->
+                    <!--</ol>-->
+                    <!--轮播（Carousel）项目 -->
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <div class="card-body">
+                                <div class="list" id="weibo">
+                                </div>
+                            </div>
                         </div>
-                        <div class="list-item">
-                            <a class="title">dsdknkjsdad</a>
-                            <div class="desc">15k阅读 1k评论</div>
-                        </div>
-                        <div class="list-item">
-                            <a class="title">dsdknkjsdadjkla</a>
-                            <div class="desc">15k阅读 1k评论</div>
-                        </div>
-                        <div class="list-item">
-                            <a class="title">dsdknkjsdadjd</a>
-                            <div class="desc">15k阅读 1k评论</div>
-                        </div>
-                        <div class="list-item">
-                            <a class="title">dsdknkjsdadjkl</a>
-                            <div class="desc">15k阅读 1k评论</div>
-                        </div>
-                        <div class="list-item">
-                            <a class="title">dsdknkjsdadjkl</a>
-                            <div class="desc">15k阅读 1k评论</div>
+                        <div class="item">
+                            <div class="card-body">
+                                <div class="list" id="toutiao">
+
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <!-- 轮播（Carousel）导航 -->
+                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev" >
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div class="footer">
-    @2017拴蛋头条，如有问题请联系15201858725.com 作者王花花
 </div>
 </body>
 </html>

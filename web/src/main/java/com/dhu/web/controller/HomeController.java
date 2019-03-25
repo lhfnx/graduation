@@ -23,4 +23,9 @@ public class HomeController {
 
     @RequestMapping(value = "/toutiao",method = RequestMethod.GET)
     public String toutiao(){return "toutiao";};
+
+    @RequestMapping(value = "/analysis",method = RequestMethod.GET)
+    public String analysis(){
+        return "analysis";
+    }
 }

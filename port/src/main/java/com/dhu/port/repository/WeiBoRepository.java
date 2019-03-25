@@ -18,9 +18,11 @@ public interface WeiBoRepository {
 
     List<CrawlerForWeiBo> queryForCache();
 
-    Long queryCount();
+    Long queryCount(String keys);
 
     List<CrawlerForWeiBo> queryHot(LocalDateTime today);
 
     int batchInsertCrawler(List<CrawlerForWeiBo> crawlers);
+
+    List<String> queryKeyWord(LocalDateTime today);
 }

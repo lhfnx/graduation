@@ -1,9 +1,11 @@
 package com.dhu.web.controller;
 
 import com.dhu.common.bean.ResponseResult;
+import com.dhu.model.DO.AnalysisDO;
 import com.dhu.model.DO.CacheDO;
 import com.dhu.model.DO.HotDO;
 import com.dhu.model.DO.ListShowDO;
+import com.dhu.model.VO.WeiBo.WeiBoAnaVO;
 import com.dhu.model.VO.WeiBo.WeiBoListVO;
 import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.service.WeiBoService;
@@ -69,8 +71,24 @@ public class WeiBoController {
             List<WeiBoVO> vos = service.getTodayInformationByHot(hotDO);
             return ResponseResult.ok(vos);
         } catch (Exception e) {
-            logger.error("toutiao hot show fail", e);
+            logger.error("weibo hot show fail", e);
             return ResponseResult.build(500, "hot show fail");
+        }
+    }
+
+    @RequestMapping(value = "analysis",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult analysisKey(@RequestBody AnalysisDO analysisDO){
+        try {
+            if (Objects.isNull(analysisDO) || Objects.isNull(analysisDO.getNum()) || analysisDO.getNum().compareTo(0) <= 0) {
+                analysisDO = new AnalysisDO();
+                analysisDO.setNum(5);
+            }
+            List<WeiBoAnaVO> vos = service.getAnalysis(analysisDO);
+            return ResponseResult.ok(vos);
+        } catch (Exception e) {
+            logger.error("weibo analysis fail", e);
+            return ResponseResult.build(500, "analysis show fail");
         }
     }
 }

@@ -5,6 +5,7 @@ import com.dhu.port.entity.CrawlerForWeiBo;
 import com.dhu.port.mapper.CrawlerForWeiBoMapper;
 import com.dhu.port.repository.WeiBoRepository;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +71,12 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
     }
 
     @Override
-    public Long queryCount() {
-        return weiBoMapper.queryCount();
+    public Long queryCount(String keys) {
+        if (StringUtils.isEmpty(keys)) {
+            return weiBoMapper.queryCount();
+        }else {
+            return weiBoMapper.queryCountByKeys("%" + keys + "%");
+        }
     }
 
     @Override
@@ -98,5 +103,12 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
             }
         }
         return count;
+    }
+
+    @Override
+    public List<String> queryKeyWord(LocalDateTime today) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String time = today.minusDays(1L).format(timeFormatter);
+        return weiBoMapper.queryKeyWord(time);
     }
 }

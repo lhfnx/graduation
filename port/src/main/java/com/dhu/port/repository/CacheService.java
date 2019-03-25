@@ -50,6 +50,13 @@ public class CacheService implements InitializingBean {
         }
     }
 
+    public void refreshConfig() {
+        Map<String,String> configs = configRepository.queryAll();
+        if (!CollectionUtils.isEmpty(configs)){
+            configCache = configs;
+        }
+    }
+
     public List<CrawlerForTouTiao> getTouTiaoCache() {
         return touTiaoCache;
     }
