@@ -37,7 +37,9 @@ public class CrawlerExecutor {
     private Set<String> filterKey = Sets.newHashSet();
     private List<String> queryKey = Lists.newArrayList();
     private Integer interval = 3;
-    private String dateFormat = "YYYY-MM-dd-HH";
+    private String dateFormat = "yyyy-MM-dd-H";
+    private Integer filterKeyCount = 5;
+    private Integer storeKeyCount = 10;
 
     @Autowired
     private KeyWordExecutor keyWordExecutor;
@@ -59,8 +61,24 @@ public class CrawlerExecutor {
             String before = LocalDateTime.now().minusHours(interval).format(timeFormatter);
             for (String queryWord : queryKey) {
                 doCrawler(cookie, now, before, queryWord, 1);
+                Thread.sleep((random.nextInt(10) + 1) * 1000);
             }
-            List<CrawlerStoreDO> result = store.stream().filter(this::filterKeyWord).collect(Collectors.toList());
+            List<CrawlerStoreDO> result = Lists.newArrayList();
+            store.forEach(s -> {
+                boolean flag = filterKeyWord(s);
+                if (flag) {
+                    for (CrawlerStoreDO c : result) {
+                        if (c.getUrl().equals(s.getUrl())) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag) {
+                    result.add(s);
+                }
+
+            });
             storeCrawler(result);
             logger.info("微博爬虫运行完毕");
         } catch (Exception e) {
@@ -194,10 +212,11 @@ public class CrawlerExecutor {
     }
 
     private boolean filterKeyWord(CrawlerStoreDO storeDO) {
-        List<KeyWordDO> keyWords = keyWordExecutor.execute(storeDO);
+        List<KeyWordDO> keyWords = keyWordExecutor.execute(storeDO, filterKeyCount);
         for (KeyWordDO keyWordDO : keyWords) {
             if (filterKey.contains(keyWordDO.getKeyWord())) {
-                storeDO.setKeyWord(keyWords);
+                storeDO.setKeyWord(keyWordExecutor.execute(storeDO, storeKeyCount).stream()
+                        .filter(k -> k.getKeyWord().length() > 1).collect(Collectors.toList()));
                 storeDO.setHotDegree(NumberUtils.toInt(storeDO.getFavorite()) * 2 + NumberUtils.toInt(storeDO
                         .getForward()) + NumberUtils.toInt(storeDO.getComment()) + NumberUtils.toInt(storeDO.getLike
                         ()));
@@ -240,5 +259,7 @@ public class CrawlerExecutor {
         filterKey = StringToCollectionUtils.stringToSet(cacheService.getConfig("FilterKey"));
         interval = NumberUtils.toInt(cacheService.getConfig("TimeInterval"), 3);
         dateFormat = cacheService.getConfig("DateFormat");
+        filterKeyCount = NumberUtils.toInt(cacheService.getConfig("FilterKeyCount"), 5);
+        storeKeyCount = NumberUtils.toInt(cacheService.getConfig("StoreKeyCount"), 10);
     }
 }

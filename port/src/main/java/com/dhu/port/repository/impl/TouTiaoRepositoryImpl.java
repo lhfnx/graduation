@@ -3,6 +3,7 @@ package com.dhu.port.repository.impl;
 import com.dhu.port.entity.CrawlerForTouTiao;
 import com.dhu.port.mapper.CrawlerForTouTiaoMapper;
 import com.dhu.port.repository.TouTiaoRepository;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -67,11 +69,10 @@ public class TouTiaoRepositoryImpl implements TouTiaoRepository {
 
     @Override
     public Long queryCount(String keys) {
-        if (StringUtils.isEmpty(keys)) {
-            return touTiaoMapper.queryCount();
-        } else {
-            return touTiaoMapper.queryCountByKeys(keys);
-        }
+        Map<String,Object> map = Maps.newHashMap();
+        map.put("keys", keys);
+        map.put("table", "crawler_toutiao");
+        return touTiaoMapper.queryCountByKeys(map);
 
     }
 
@@ -80,5 +81,15 @@ public class TouTiaoRepositoryImpl implements TouTiaoRepository {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String time = today.minusDays(1L).format(timeFormatter);
         return touTiaoMapper.queryHot(time);
+    }
+
+    @Override
+    public List<CrawlerForTouTiao> queryByPagesWithCondition(String keys, Integer offset, Integer rows) {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("keys", keys);
+        map.put("offset", offset.toString());
+        map.put("rows", rows.toString());
+        map.put("table", "crawler_toutiao");
+        return touTiaoMapper.queryByPagesWithCondition(map);
     }
 }

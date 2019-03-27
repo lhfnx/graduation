@@ -69,14 +69,14 @@ public class CrawlerExecutorApplicationTests {
 
 	@Test
 	public void testHan(){
-		String str = "【PeckShield: EOS竞猜游戏EOSVagas遭交易阻塞攻击】今天下午16:46-17:18之间，PeckShield安全盾风控平台DAppShield监测到黑客向EOS" +
-				"竞猜类游戏EOSVagas发起连续攻击，并已成功获利。PeckShield安全人员分析发现黑客采用的攻击手段是交易阻塞攻击（CVE-2019-6199" +
-				"），而且该黑客帐号异常活跃，刚刚攻击过竞猜类游戏EOS Cube，其相关账号已被标记为高危。 " +
-				"PeckShield安全人员在此提醒，开发者应在合约上线前做好安全测试，特别注意加强风控，阻止高危帐号带来的威胁，必要时可寻求第三方安全公司协助，帮助其完成合约上线前攻击测试及基础安全防御部署。 " +
-				"\uE627区块链\uE627比特币 收起全文d\n";
-
+		String str = "【立陶宛一男子诈骗谷歌脸书 涉案1.22亿刀被判30年】近日，据国外媒体报道，一名立陶宛男子在2013-2015年期间，通过伪造支票的方式，诈骗了脸书和谷歌两家公司，涉案金额高达1.22" +
+				"亿美金（约合8.2亿人民币）。\n" +
+				"该男子伪造了订单发票和各式虚假文书，用邮件一起发送，为了虚构合法的假象，他还伪造了订单合同已经各种签名信件。此人现在面临美国对他的电信诈骗，巨额盗窃和洗钱的指控，并可能被判处长达30年的监禁。";
 		List<String> keywords = TextRankKeyword.getKeywordList(str, 10);
 		System.out.println(keywords.toString());
+		KeyWordComputer ky = new KeyWordComputer(10);
+		List<Keyword> keywordList = ky.computeArticleTfidf(str);
+		System.out.println(keywordList);
 	}
 
 	@Test

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>微博</title>
     <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="css/myweibostyle.css">
+    <link rel="stylesheet" href="css/mystyle.css">
     <link rel="stylesheet" href="css/pagination.css">
     <script src="jquery-3.3.1.min.js"></script>
     <script src="bootstrap.min.js"></script>
@@ -22,8 +22,8 @@
                     var str = "";
                     for (var i = 0; i < msg.data.voList.length; i++) {
                         str += "<div class=\"news-list-item clearfix\" id=\"1\">\n" +
-                            "                     <div class=\"col-sm-5\"><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
-                            "                     <div class=\"col-sm-7\">\n" +
+                            "                     <div class=\"col-sm-5\" style='width: 20%;'><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
+                            "                     <div class=\"col-sm-7\" style='width: 75%'>\n" +
                             "                         <div class=\"titlew\">\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.author + "</span> \n";
                         str += "</div>\n" +
@@ -205,7 +205,6 @@
     </ul>
 </nav>
 <div class="footer">
-    @2017拴蛋头条，如有问题请联系15201858725.com 作者王花花
 </div>
 </body>
 </html>

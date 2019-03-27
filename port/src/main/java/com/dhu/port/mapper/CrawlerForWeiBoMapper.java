@@ -1,11 +1,13 @@
 package com.dhu.port.mapper;
 
+import com.dhu.port.Provider.SqlProvider;
 import com.dhu.port.entity.CrawlerForWeiBo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface CrawlerForWeiBoMapper {
@@ -46,11 +48,8 @@ public interface CrawlerForWeiBoMapper {
     @ResultMap("crawlerWeiBoMapper")
     CrawlerForWeiBo queryById(@Param("id") Long id);
 
-    @Select("SELECT COUNT(*) FROM crawler_weibo WHERE is_active = 1")
-    Long queryCount();
-
-    @Select("SELECT COUNT(*) FROM crawler_weibo WHERE is_active = 1 AND key_word LIKE #{keys}")
-    Long queryCountByKeys(@Param("keys") String keys);
+    @SelectProvider(type = SqlProvider.class,method = "getCountByKeys")
+    Long queryCountByKeys(Map<String,Object> map);
 
     @Select("SELECT * FROM crawler_weibo WHERE is_active = 1 AND datachange_createtime > #{today} ORDER BY " +
             "hot_degree DESC,id DESC LIMIT 20")
@@ -64,4 +63,8 @@ public interface CrawlerForWeiBoMapper {
 
     @Select("SELECT key_word FROM crawler_weibo WHERE is_active = 1 AND datachange_createtime > #{today}")
     List<String> queryKeyWord(@Param("today")String today);
+
+    @SelectProvider(type = SqlProvider.class,method = "getListByKeys")
+    @ResultMap("crawlerWeiBoMapper")
+    List<CrawlerForWeiBo> queryByPagesWithCondition(Map<String,Object> map);
 }

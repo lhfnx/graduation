@@ -35,7 +35,8 @@ public class WeiBoServiceImpl implements WeiBoService {
     @Autowired
     private CacheService cacheService;
 
-    private List<String> otherFilter = Lists.newArrayList("w","v","nz","d","c","cc","f","m","mg","Mg","mq","q","qg","qt","qv");
+    private List<String> otherFilter = Lists.newArrayList("w", "v", "nz", "d", "c", "cc", "f", "m", "mg", "Mg", "mq",
+            "q", "qg", "qt", "qv");
 
     @Override
     public List<WeiBoVO> getInformationFromCache(Integer num) {
@@ -53,15 +54,16 @@ public class WeiBoServiceImpl implements WeiBoService {
         WeiBoListVO weiBoListVO = new WeiBoListVO();
         List<CrawlerForWeiBo> weiBos = Lists.newArrayList();
         if (StringUtils.isEmpty(showDO.getKey())) {
-            weiBos = weiBoRepository.queryByPages((showDO.getIndex() - 1) * showDO.getSize(), showDO.getSize());
+            weiBos = weiBoRepository.queryByPagesWithCondition(StringUtils.EMPTY, (showDO.getIndex() - 1) * showDO
+                    .getSize(), showDO.getSize());
         } else {
-            weiBos = weiBoRepository.queryByPagesWithKeyWord(showDO.getKey(), (showDO.getIndex() - 1) * showDO
+            weiBos = weiBoRepository.queryByPagesWithCondition(showDO.getKey(), (showDO.getIndex() - 1) * showDO
                     .getSize(), showDO.getSize());
         }
         List<WeiBoVO> weiBoVOS = weiBos.stream().map(this::copyProperties).collect(Collectors.toList());
         weiBoListVO.setCurrentIndex(showDO.getIndex());
-        weiBoListVO.setMaxIndex(weiBoRepository.queryCount(showDO.getKey()).intValue() / showDO.getSize() + (weiBoRepository
-                .queryCount(showDO.getKey()).intValue() % showDO.getSize() == 0 ? 0 : 1));
+        Long cnt = weiBoRepository.queryCount(showDO.getKey());
+        weiBoListVO.setMaxIndex(cnt.intValue() / showDO.getSize() + (cnt.intValue() % showDO.getSize() == 0 ? 0 : 1));
         weiBoListVO.setSize(showDO.getSize());
         weiBoListVO.setVoList(weiBoVOS);
         return weiBoListVO;
@@ -92,6 +94,9 @@ public class WeiBoServiceImpl implements WeiBoService {
         } else {
             vo.setInformationDO(new InformationDO());
         }
+        if (StringUtils.isNotEmpty(crawler.getKeyWord())) {
+            vo.setKeyWords(JsonUtils.jsonToList(crawler.getKeyWord(), KeyWordDO.class));
+        }
         return vo;
     }
 
@@ -107,9 +112,9 @@ public class WeiBoServiceImpl implements WeiBoService {
         });
         Map<String, Integer> map = Maps.newHashMap();
         keyWordDOList.forEach(k -> {
-            if (CollectionUtils.isEmpty(analysisDO.getNatures()) && !otherFilter.contains(k.getNature())){
+            if (CollectionUtils.isEmpty(analysisDO.getNatures()) && !otherFilter.contains(k.getNature())) {
                 map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
-            }else if (analysisDO.getNatures().contains(k.getNature())) {
+            } else if (analysisDO.getNatures().contains(k.getNature())) {
                 map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
             }
         });
@@ -119,10 +124,24 @@ public class WeiBoServiceImpl implements WeiBoService {
                 .filter(w -> !filterKey.contains(w.getName()))
                 .sorted(Comparator.comparingInt(WeiBoAnaVO::getFeq).reversed())
                 .collect(Collectors.toList());
-        if (sorted.size()<analysisDO.getNum()){
-            return sorted;
+        List<WeiBoAnaVO> result = Lists.newArrayList();
+        for (WeiBoAnaVO anaVO : sorted) {
+            boolean flag = true;
+            for (WeiBoAnaVO res : result) {
+                if (res.getName().contains(anaVO.getName())) {
+                    flag = false;
+                    res.setFeq(res.getFeq() + anaVO.getFeq());
+                    break;
+                }
+            }
+            if (flag) {
+                result.add(anaVO);
+            }
         }
-        return sorted.subList(0, analysisDO.getNum());
+        if (result.size() < analysisDO.getNum()) {
+            return result;
+        }
+        return result.subList(0, analysisDO.getNum());
     }
 
     private WeiBoAnaVO convert2WeiBoAnaVO(Map.Entry<String, Integer> entry) {

@@ -4,6 +4,7 @@ import com.dhu.port.entity.CrawlerForWeiBo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface WeiBoRepository {
     List<CrawlerForWeiBo> queryAll();
@@ -25,4 +26,6 @@ public interface WeiBoRepository {
     int batchInsertCrawler(List<CrawlerForWeiBo> crawlers);
 
     List<String> queryKeyWord(LocalDateTime today);
+
+    List<CrawlerForWeiBo> queryByPagesWithCondition(String keys, Integer offset, Integer rows);
 }

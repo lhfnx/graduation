@@ -1,11 +1,13 @@
 package com.dhu.port.mapper;
 
+import com.dhu.port.Provider.SqlProvider;
 import com.dhu.port.entity.CrawlerForTouTiao;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface CrawlerForTouTiaoMapper {
@@ -47,8 +49,8 @@ public interface CrawlerForTouTiaoMapper {
     @ResultMap("crawlerTouTiaoMapper")
     CrawlerForTouTiao queryById(@Param("id") Long id);
 
-    @Select("SELECT COUNT(*) FROM crawler_toutiao WHERE is_active = 1")
-    Long queryCount();
+    @SelectProvider(type = SqlProvider.class,method = "getCountByKeys")
+    Long queryCountByKeys(Map<String,Object> map);
 
     @Select("SELECT COUNT(*) FROM crawler_toutiao WHERE is_active = 1 AND key_word LIKE #{keys}")
     Long queryCountByKeys(@Param("keys") String keys);
@@ -57,4 +59,8 @@ public interface CrawlerForTouTiaoMapper {
             "hot_degree DESC,id DESC LIMIT 20")
     @ResultMap("crawlerTouTiaoMapper")
     List<CrawlerForTouTiao> queryHot(@Param("today") String today);
+
+    @SelectProvider(type = SqlProvider.class,method = "getListByKeys")
+    @ResultMap("crawlerTouTiaoMapper")
+    List<CrawlerForTouTiao> queryByPagesWithCondition(Map<String,Object> map);
 }

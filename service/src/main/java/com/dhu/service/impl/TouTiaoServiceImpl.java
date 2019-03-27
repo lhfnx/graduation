@@ -4,6 +4,7 @@ import com.dhu.common.utils.BeanUtil;
 import com.dhu.common.utils.JsonUtils;
 import com.dhu.model.DO.HotDO;
 import com.dhu.model.DO.InformationDO;
+import com.dhu.model.DO.KeyWordDO;
 import com.dhu.model.DO.ListShowDO;
 import com.dhu.model.VO.TouTiao.TouTiaoListVO;
 import com.dhu.model.VO.TouTiao.TouTiaoVO;
@@ -50,15 +51,16 @@ public class TouTiaoServiceImpl implements TouTiaoService {
         TouTiaoListVO touTiaoListVO = new TouTiaoListVO();
         List<CrawlerForTouTiao> touTiaos = Lists.newArrayList();
         if (StringUtils.isEmpty(showDO.getKey())) {
-            touTiaos = touTiaoRepository.queryByPages((showDO.getIndex() - 1) * showDO.getSize(), showDO.getSize());
+            touTiaos = touTiaoRepository.queryByPagesWithCondition(StringUtils.EMPTY, (showDO.getIndex() - 1) * showDO
+                    .getSize(), showDO.getSize());
         } else {
-            touTiaos = touTiaoRepository.queryByPagesWithKeyWord(showDO.getKey(), (showDO.getIndex() - 1) * showDO
+            touTiaos = touTiaoRepository.queryByPagesWithCondition(showDO.getKey(), (showDO.getIndex() - 1) * showDO
                     .getSize(), showDO.getSize());
         }
         List<TouTiaoVO> weiBoVOS = touTiaos.stream().map(this::copyProperties).collect(Collectors.toList());
         touTiaoListVO.setCurrentIndex(showDO.getIndex());
-        touTiaoListVO.setMaxIndex(touTiaoRepository.queryCount(showDO.getKey()).intValue() / showDO.getSize() + (touTiaoRepository
-                .queryCount(showDO.getKey()).intValue() % showDO.getSize() == 0 ? 0 : 1));
+        Long cnt = touTiaoRepository.queryCount(showDO.getKey());
+        touTiaoListVO.setMaxIndex(cnt.intValue() / showDO.getSize() + (cnt.intValue() % showDO.getSize() == 0 ? 0 : 1));
         touTiaoListVO.setSize(showDO.getSize());
         touTiaoListVO.setVoList(weiBoVOS);
         return touTiaoListVO;
@@ -88,6 +90,9 @@ public class TouTiaoServiceImpl implements TouTiaoService {
             vo.setInformationDO(JsonUtils.deSerialize(crawler.getInformation(), InformationDO.class));
         } else {
             vo.setInformationDO(new InformationDO());
+        }
+        if (StringUtils.isNotEmpty(crawler.getKeyWord())) {
+            vo.setKeyWords(JsonUtils.jsonToList(crawler.getKeyWord(), KeyWordDO.class));
         }
         return vo;
     }

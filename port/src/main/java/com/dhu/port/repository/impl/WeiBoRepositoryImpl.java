@@ -4,7 +4,10 @@ import com.dhu.common.utils.JsonUtils;
 import com.dhu.port.entity.CrawlerForWeiBo;
 import com.dhu.port.mapper.CrawlerForWeiBoMapper;
 import com.dhu.port.repository.WeiBoRepository;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -72,11 +76,10 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
 
     @Override
     public Long queryCount(String keys) {
-        if (StringUtils.isEmpty(keys)) {
-            return weiBoMapper.queryCount();
-        }else {
-            return weiBoMapper.queryCountByKeys("%" + keys + "%");
-        }
+        Map<String,Object> map = Maps.newHashMap();
+        map.put("keys", keys);
+        map.put("table", "crawler_weibo");
+        return weiBoMapper.queryCountByKeys(map);
     }
 
     @Override
@@ -110,5 +113,15 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String time = today.minusDays(1L).format(timeFormatter);
         return weiBoMapper.queryKeyWord(time);
+    }
+
+    @Override
+    public List<CrawlerForWeiBo> queryByPagesWithCondition(String keys, Integer offset, Integer rows) {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("keys", keys);
+        map.put("offset", offset.toString());
+        map.put("rows", rows.toString());
+        map.put("table", "crawler_weibo");
+        return weiBoMapper.queryByPagesWithCondition(map);
     }
 }
