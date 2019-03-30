@@ -1,6 +1,7 @@
 package com.dhu.web.controller;
 
-import com.dhu.crawler.weibo.CrawlerExecutor;
+import com.dhu.crawler.toutiao.ToutiaoCrawlerExecutor;
+import com.dhu.crawler.weibo.WeiboCrawlerExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("crawler")
 public class CrawlerController {
     @Autowired
-    private CrawlerExecutor executor;
+    private WeiboCrawlerExecutor weiboCrawlerExecutor;
+    @Autowired
+    private ToutiaoCrawlerExecutor toutiaoCrawlerExecutor;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @RequestMapping(value = "execute", method = RequestMethod.GET)
+    @RequestMapping(value = "weibo/execute", method = RequestMethod.GET)
     @ResponseBody
-    public String executeCrawler() {
-        executor.execute();
-        return "爬虫运行结束";
+    public String executeWeiboCrawler() {
+        weiboCrawlerExecutor.execute();
+        return "微博爬虫运行结束";
+    }
+
+    @RequestMapping(value = "toutiao/execute", method = RequestMethod.GET)
+    @ResponseBody
+    public String executeToutiaoCrawler() {
+        toutiaoCrawlerExecutor.execute();
+        return "微博爬虫运行结束";
     }
 }

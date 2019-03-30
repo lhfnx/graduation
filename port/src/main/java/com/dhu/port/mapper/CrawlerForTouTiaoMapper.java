@@ -52,9 +52,6 @@ public interface CrawlerForTouTiaoMapper {
     @SelectProvider(type = SqlProvider.class,method = "getCountByKeys")
     Long queryCountByKeys(Map<String,Object> map);
 
-    @Select("SELECT COUNT(*) FROM crawler_toutiao WHERE is_active = 1 AND key_word LIKE #{keys}")
-    Long queryCountByKeys(@Param("keys") String keys);
-
     @Select("SELECT * FROM crawler_toutiao WHERE is_active = 1 AND datachange_createtime > #{today} ORDER BY " +
             "hot_degree DESC,id DESC LIMIT 20")
     @ResultMap("crawlerTouTiaoMapper")

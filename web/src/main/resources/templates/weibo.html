@@ -32,8 +32,11 @@
                             "                             <span>" + msg.data.voList[i].informationDO.comment + "评论</span> *\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.like + "点赞</span> *\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.favorite + "收藏</span> *\n" +
-                            "                             <span>" + msg.data.voList[i].informationDO.forward + "转发</span> *\n" +
-                            "                         </div>\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.forward + "转发</span> <br>";
+                        for (var j = 0; j < msg.data.voList[i].keyWords.length; j++) {
+                            str += "                             <span class=\"label label-info\">" + msg.data.voList[i].keyWords[j].keyWord + "</span>";
+                        }
+                        str += "                         </div>\n" +
                             "                     </div>";
                         str += "</div>";
                     }
@@ -47,35 +50,35 @@
                         currentPage: page,//当前页面
                         numberOfPages: 10,//一页显示几个按钮（在ul里面生成5个li）
                         totalPages: pages, //总页数
-                        onPageClicked:function (event, originalEvent, type, page) {
+                        onPageClicked: function (event, originalEvent, type, page) {
                             var currentTarget = $(event.currentTarget);
                             switch (type) {
                                 case "first":
                                     currentTarget.bootstrapPaginator("showFirst");
-                                    paging(page,key);
+                                    paging(page, key);
                                     break;
                                 //上一页
                                 case "prev":
                                     currentTarget.bootstrapPaginator("showPrevious");
-                                    paging(page,key);
+                                    paging(page, key);
                                     break;
                                 case "next":
                                     currentTarget.bootstrapPaginator("showNext");
-                                    paging(page,key);
+                                    paging(page, key);
                                     break;
                                 case "last":
                                     currentTarget.bootstrapPaginator("showLast");
-                                    paging(page,key);
+                                    paging(page, key);
                                     break;
                                 case "page":
                                     currentTarget.bootstrapPaginator("show", page);
-                                    paging(page,key);
+                                    paging(page, key);
                                     break;
                             }
                         }
                     }
                     element.bootstrapPaginator(options);
-                    scrollTo(0,0);
+                    scrollTo(0, 0);
                 }
             });
         };

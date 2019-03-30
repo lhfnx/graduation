@@ -85,6 +85,7 @@ public class CookieUtils {
             Map<String, String> cookie = Maps.newHashMap();
             cookie.put("SUB", json.getString("sub"));
             cookie.put("SUBP", json.getString("subp"));
+            retryTimes = 5;
             return cookie;
         } catch (IOException e) {
             logger.error("CookieUtils fail", e);

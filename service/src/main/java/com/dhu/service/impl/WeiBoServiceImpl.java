@@ -37,6 +37,7 @@ public class WeiBoServiceImpl implements WeiBoService {
 
     private List<String> otherFilter = Lists.newArrayList("w", "v", "nz", "d", "c", "cc", "f", "m", "mg", "Mg", "mq",
             "q", "qg", "qt", "qv");
+    private List<String> prefix = Lists.newArrayList("n", "a");
 
     @Override
     public List<WeiBoVO> getInformationFromCache(Integer num) {
@@ -95,9 +96,19 @@ public class WeiBoServiceImpl implements WeiBoService {
             vo.setInformationDO(new InformationDO());
         }
         if (StringUtils.isNotEmpty(crawler.getKeyWord())) {
-            vo.setKeyWords(JsonUtils.jsonToList(crawler.getKeyWord(), KeyWordDO.class));
+            vo.setKeyWords(JsonUtils.jsonToList(crawler.getKeyWord(), KeyWordDO.class)
+                    .stream().filter(k -> fitStartWith(k.getNature())).distinct().collect(Collectors.toList()));
         }
         return vo;
+    }
+
+    private boolean fitStartWith(String str) {
+        for (String p : prefix) {
+            if (str.startsWith(p)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
