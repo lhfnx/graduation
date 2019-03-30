@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>微博</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" >
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="css/mystyle.css">
     <link rel="stylesheet" href="css/pagination.css">
@@ -107,42 +108,65 @@
         }
 
         $(function () {
-            $('.col-md-2').on("click", "#1", function () {
-                $(".col-md-2").html("");
-                var str = "";
-                str += "<div class=\"list-group side-bar\">\n" +
-                    "                <button class=\"list-group-item active\" id=\"1\">全部</button>\n" +
-                    "                <button class=\"list-group-item\" id=\"2\">风控</button>\n" +
-                    "                <button class=\"list-group-item\" id=\"3\">诈骗</button>\n" +
-                    "            </div>";
-                $(".col-md-2").html(str);
+            $(".all").click(function () {
                 paging(1, "");
             });
         });
         $(function () {
-            $('.col-md-2').on("click", "#2", function () {
-                $(".col-md-2").html("");
-                var str = "";
-                str += "<div class=\"list-group side-bar\">\n" +
-                    "                <button class=\"list-group-item\" id=\"1\">全部</button>\n" +
-                    "                <button class=\"list-group-item active\" id=\"2\">风控</button>\n" +
-                    "                <button class=\"list-group-item\" id=\"3\">诈骗</button>\n" +
-                    "            </div>";
-                $(".col-md-2").html(str);
-                paging(1, "风控");
+            $(".fraud").click(function () {
+                paging(1, "诈骗");
+            });
+            $("#collapseListGroup2").on("click", "#f1", function () {
+                paging(1, "诈骗,网络");
+            });
+            $("#collapseListGroup2").on("click", "#f2", function () {
+                paging(1, "诈骗,短信");
+            });
+            $("#collapseListGroup2").on("click", "#f3", function () {
+                paging(1, "诈骗,电话");
+            });
+            $("#collapseListGroup2").on("click", "#f4", function () {
+                paging(1, "诈骗,冒充");
             });
         });
+
         $(function () {
-            $('.col-md-2').on("click", "#3", function () {
-                $(".col-md-2").html("");
-                var str = "";
-                str += "<div class=\"list-group side-bar\">\n" +
-                    "                <button class=\"list-group-item\" id=\"1\">全部</button>\n" +
-                    "                <button class=\"list-group-item\" id=\"2\">风控</button>\n" +
-                    "                <button class=\"list-group-item active\" id=\"3\">诈骗</button>\n" +
-                    "            </div>";
-                $(".col-md-2").html(str);
-                paging(1, "诈骗");
+            $(".risk").click(function () {
+                paging(1, "风控");
+            });
+            $("#collapseListGroup1").on("click", "#r1", function () {
+                paging(1, "风控,原油");
+            });
+            $("#collapseListGroup1").on("click", "#r2", function () {
+                paging(1, "风控,外汇");
+            });
+            $("#collapseListGroup1").on("click", "#r3", function () {
+                paging(1, "风控,黄金");
+            });
+            $("#collapseListGroup1").on("click", "#r4", function () {
+                paging(1, "风控,互联网");
+            });
+        });
+        $(function(){
+            $(".panel-heading").click(function(e){
+                /*切换折叠指示图标*/
+                $(this).find("span").toggleClass("glyphicon-chevron-down");
+                $(this).find("span").toggleClass("glyphicon-chevron-up");
+                $(".list-group").find(".actived").removeClass("actived")
+                $(this).addClass("actived");
+            });
+        });
+
+        $(function () {
+            $(".inves").click(function () {
+                paging(1, "投资");
+            });
+        });
+
+        $(function(){
+            $(".list-group-item").click(function(e){
+                $(".list-group").find(".actived").removeClass("actived")
+                $(this).addClass("actived");
             });
         });
 
@@ -172,9 +196,70 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group side-bar">
-                <button class="list-group-item active" id="1">全部</button>
-                <button class="list-group-item" id="2">风控</button>
-                <button class="list-group-item" id="3">诈骗</button>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading all" id="collapseListGroupHeading0" data-toggle="collapse" data-target="#collapseListGroup0" role="tab" >
+                        <h4 class="panel-title">
+                            全部
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading risk" id="collapseListGroupHeading1" data-toggle="collapse" data-target="#collapseListGroup1" role="tab" >
+                        <h4 class="panel-title">
+                            风控
+                            <span class="glyphicon glyphicon-chevron-down right" style="float: right"></span>
+                        </h4>
+                    </div>
+                    <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
+                    <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1">
+                        <ul class="list-group" style="list-style: none">
+                            <li>
+                                <a class="list-group-item" id="r1">原油</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="r2">外汇</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="r3">黄金</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="r4">互联网</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!--panel end-->
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading" id="collapseListGroupHeading2" data-toggle="collapse" data-target="#collapseListGroup2" role="tab" >
+                        <h4 class="panel-title fraud">
+                            诈骗
+                            <span class="glyphicon glyphicon-chevron-down right" style="float: right"></span>
+                        </h4>
+                    </div>
+                    <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
+                    <div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading2">
+                        <ul class="list-group" style="list-style: none">
+                            <li>
+                                <a class="list-group-item" id="f1">网络诈骗</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="f2">短信诈骗</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="f3">电话诈骗</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="f4">冒充身份诈骗</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!--panel end-->
+                <div class="panel-primary leftMenu">
+                <div class="panel-heading inves" id="collapseListGroupHeading3" data-toggle="collapse" data-target="#collapseListGroup3" role="tab" >
+                    <h4 class="panel-title">
+                        投资
+                    </h4>
+                </div>
+            </div>
             </div>
         </div>
         <div class="col-md-7">

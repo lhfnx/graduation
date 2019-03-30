@@ -1,11 +1,11 @@
-package com.dhu.model.VO.WeiBo;
+package com.dhu.model.DO;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class WeiBoAnaVO {
+public class AnaDO {
     private String name;
     private Integer feq;
 }

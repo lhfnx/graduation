@@ -4,7 +4,7 @@ import com.dhu.common.utils.BeanUtil;
 import com.dhu.common.utils.JsonUtils;
 import com.dhu.common.utils.StringToCollectionUtils;
 import com.dhu.model.DO.*;
-import com.dhu.model.VO.WeiBo.WeiBoAnaVO;
+import com.dhu.model.DO.AnaDO;
 import com.dhu.model.VO.WeiBo.WeiBoListVO;
 import com.dhu.model.VO.WeiBo.WeiBoVO;
 import com.dhu.port.entity.CrawlerForWeiBo;
@@ -38,6 +38,7 @@ public class WeiBoServiceImpl implements WeiBoService {
     private List<String> otherFilter = Lists.newArrayList("w", "v", "nz", "d", "c", "cc", "f", "m", "mg", "Mg", "mq",
             "q", "qg", "qt", "qv");
     private List<String> prefix = Lists.newArrayList("n", "a");
+    private List<String> filterPrefix = Lists.newArrayList("nx");
 
     @Override
     public List<WeiBoVO> getInformationFromCache(Integer num) {
@@ -104,7 +105,7 @@ public class WeiBoServiceImpl implements WeiBoService {
 
     private boolean fitStartWith(String str) {
         for (String p : prefix) {
-            if (str.startsWith(p)) {
+            if (str.startsWith(p) && !filterPrefix.contains(str)) {
                 return true;
             }
         }
@@ -112,7 +113,7 @@ public class WeiBoServiceImpl implements WeiBoService {
     }
 
     @Override
-    public List<WeiBoAnaVO> getAnalysis(AnalysisDO analysisDO) {
+    public List<AnaDO> getAnalysis(AnalysisDO analysisDO) {
         List<String> keyWords = weiBoRepository.queryKeyWord(LocalDateTime.now().minusDays(analysisDO.getDays()));
         if (CollectionUtils.isEmpty(keyWords)) {
             return Lists.newArrayList();
@@ -130,15 +131,15 @@ public class WeiBoServiceImpl implements WeiBoService {
             }
         });
         List<String> filterKey = StringToCollectionUtils.stringToList(cacheService.getConfig("FilterKey"));
-        List<WeiBoAnaVO> sorted = map.entrySet().stream()
+        List<AnaDO> sorted = map.entrySet().stream()
                 .map(this::convert2WeiBoAnaVO)
                 .filter(w -> !filterKey.contains(w.getName()))
-                .sorted(Comparator.comparingInt(WeiBoAnaVO::getFeq).reversed())
+                .sorted(Comparator.comparingInt(AnaDO::getFeq).reversed())
                 .collect(Collectors.toList());
-        List<WeiBoAnaVO> result = Lists.newArrayList();
-        for (WeiBoAnaVO anaVO : sorted) {
+        List<AnaDO> result = Lists.newArrayList();
+        for (AnaDO anaVO : sorted) {
             boolean flag = true;
-            for (WeiBoAnaVO res : result) {
+            for (AnaDO res : result) {
                 if (res.getName().contains(anaVO.getName())) {
                     flag = false;
                     res.setFeq(res.getFeq() + anaVO.getFeq());
@@ -155,8 +156,8 @@ public class WeiBoServiceImpl implements WeiBoService {
         return result.subList(0, analysisDO.getNum());
     }
 
-    private WeiBoAnaVO convert2WeiBoAnaVO(Map.Entry<String, Integer> entry) {
-        WeiBoAnaVO anaVO = new WeiBoAnaVO();
+    private AnaDO convert2WeiBoAnaVO(Map.Entry<String, Integer> entry) {
+        AnaDO anaVO = new AnaDO();
         anaVO.setName(entry.getKey());
         anaVO.setFeq(entry.getValue());
         return anaVO;
