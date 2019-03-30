@@ -43,7 +43,7 @@ public class WeiboIPUtils {
                     request.addAll(hosts);
                 }
             } catch (Exception e) {
-                logger.error("头条爬虫异常", e);
+                logger.error("ip爬虫异常", e);
             }
         }
         try {
