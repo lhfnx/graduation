@@ -69,7 +69,7 @@ public class TouTiaoRepositoryImpl implements TouTiaoRepository {
 
     @Override
     public Long queryCount(String keys) {
-        Map<String,Object> map = Maps.newHashMap();
+        Map<String, Object> map = Maps.newHashMap();
         map.put("keys", keys);
         map.put("table", "crawler_toutiao");
         return touTiaoMapper.queryCountByKeys(map);
@@ -91,5 +91,16 @@ public class TouTiaoRepositoryImpl implements TouTiaoRepository {
         map.put("rows", rows.toString());
         map.put("table", "crawler_toutiao");
         return touTiaoMapper.queryByPagesWithCondition(map);
+    }
+
+    @Override
+    public List<String> queryKeyWord(LocalDateTime today, String keys) {
+        Map<String, Object> map = Maps.newHashMap();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String time = today.minusDays(1L).format(timeFormatter);
+        map.put("keys", keys);
+        map.put("table", "crawler_toutiao");
+        map.put("today", time);
+        return touTiaoMapper.queryKeyWord(map);
     }
 }

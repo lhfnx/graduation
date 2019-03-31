@@ -58,4 +58,7 @@ public interface CrawlerForTouTiaoMapper {
     @SelectProvider(type = SqlProvider.class,method = "getListByKeys")
     @ResultMap("crawlerTouTiaoMapper")
     List<CrawlerForTouTiao> queryByPagesWithCondition(Map<String,Object> map);
+
+    @SelectProvider(type = SqlProvider.class,method = "getKeyWords")
+    List<String> queryKeyWord(Map<String,Object> map);
 }

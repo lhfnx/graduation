@@ -114,7 +114,8 @@ public class WeiBoServiceImpl implements WeiBoService {
 
     @Override
     public List<AnaDO> getAnalysis(AnalysisDO analysisDO) {
-        List<String> keyWords = weiBoRepository.queryKeyWord(LocalDateTime.now().minusDays(analysisDO.getDays()));
+        List<String> keyWords = weiBoRepository.queryKeyWord(LocalDateTime.now().minusDays(analysisDO.getDays()),
+                analysisDO.getKey());
         if (CollectionUtils.isEmpty(keyWords)) {
             return Lists.newArrayList();
         }
@@ -126,7 +127,7 @@ public class WeiBoServiceImpl implements WeiBoService {
         keyWordDOList.forEach(k -> {
             if (CollectionUtils.isEmpty(analysisDO.getNatures()) && !otherFilter.contains(k.getNature())) {
                 map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
-            } else if (analysisDO.getNatures().contains(k.getNature())) {
+            } else if (analysisDO.getNatures().stream().anyMatch(a -> k.getNature().startsWith(a))) {
                 map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
             }
         });

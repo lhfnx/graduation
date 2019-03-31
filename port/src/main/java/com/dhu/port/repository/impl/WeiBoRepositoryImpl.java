@@ -109,10 +109,14 @@ public class WeiBoRepositoryImpl implements WeiBoRepository {
     }
 
     @Override
-    public List<String> queryKeyWord(LocalDateTime today) {
+    public List<String> queryKeyWord(LocalDateTime today, String keys) {
+        Map<String, Object> map = Maps.newHashMap();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String time = today.minusDays(1L).format(timeFormatter);
-        return weiBoMapper.queryKeyWord(time);
+        map.put("keys", keys);
+        map.put("table", "crawler_weibo");
+        map.put("today", time);
+        return weiBoMapper.queryKeyWord(map);
     }
 
     @Override

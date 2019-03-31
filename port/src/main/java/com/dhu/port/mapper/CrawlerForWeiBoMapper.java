@@ -61,8 +61,8 @@ public interface CrawlerForWeiBoMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertCrawler(CrawlerForWeiBo weiBo);
 
-    @Select("SELECT key_word FROM crawler_weibo WHERE is_active = 1 AND datachange_createtime > #{today}")
-    List<String> queryKeyWord(@Param("today")String today);
+    @SelectProvider(type = SqlProvider.class,method = "getKeyWords")
+    List<String> queryKeyWord(Map<String,Object> map);
 
     @SelectProvider(type = SqlProvider.class,method = "getListByKeys")
     @ResultMap("crawlerWeiBoMapper")

@@ -1,9 +1,7 @@
 package com.dhu.web.controller;
 
 import com.dhu.common.bean.ResponseResult;
-import com.dhu.model.DO.CacheDO;
-import com.dhu.model.DO.HotDO;
-import com.dhu.model.DO.ListShowDO;
+import com.dhu.model.DO.*;
 import com.dhu.model.VO.TouTiao.TouTiaoListVO;
 import com.dhu.model.VO.TouTiao.TouTiaoVO;
 import com.dhu.service.TouTiaoService;
@@ -31,9 +29,8 @@ public class TouTiaoController {
     @ResponseBody
     public ResponseResult getCache(@RequestBody CacheDO cacheDO) {
         try {
-            if (Objects.isNull(cacheDO) || Objects.isNull(cacheDO.getNum()) || cacheDO.getNum().compareTo(0) <= 0) {
-                cacheDO = new CacheDO();
-                cacheDO.setNum(100);
+            if (Objects.isNull(cacheDO) || Objects.isNull(cacheDO.getNum())) {
+                return ResponseResult.build(500, "Param Error");
             }
             List<TouTiaoVO> cacheVOs = service.getInformationFromCache(cacheDO.getNum());
             return ResponseResult.ok(cacheVOs);
@@ -72,6 +69,22 @@ public class TouTiaoController {
         } catch (Exception e) {
             logger.error("toutiao hot show fail", e);
             return ResponseResult.build(500, "hot show fail");
+        }
+    }
+
+    @RequestMapping(value = "analysis",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseResult analysisKey(@RequestBody AnalysisDO analysisDO){
+        try {
+            if (Objects.isNull(analysisDO) || Objects.isNull(analysisDO.getNum()) || analysisDO.getNum().compareTo(0) <= 0) {
+                analysisDO = new AnalysisDO();
+                analysisDO.setNum(5);
+            }
+            List<AnaDO> vos = service.getAnalysis(analysisDO);
+            return ResponseResult.ok(vos);
+        } catch (Exception e) {
+            logger.error("weibo analysis fail", e);
+            return ResponseResult.build(500, "analysis show fail");
         }
     }
 }

@@ -25,7 +25,7 @@ public interface WeiBoRepository {
 
     int batchInsertCrawler(List<CrawlerForWeiBo> crawlers);
 
-    List<String> queryKeyWord(LocalDateTime today);
+    List<String> queryKeyWord(LocalDateTime today, String keys);
 
     List<CrawlerForWeiBo> queryByPagesWithCondition(String keys, Integer offset, Integer rows);
 }

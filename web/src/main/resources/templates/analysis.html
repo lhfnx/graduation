@@ -9,37 +9,182 @@
     <script src="bootstrap.min.js"></script>
     <script src="bootstrap-paginator.js"></script>
     <script src="echarts.js"></script>
+    <script src="worldcloud.js"></script>
     <script type="text/javascript">
 
-        function analysing(natures, num, days) {
+        function analysing(url,natures, num, days, key) {
+            var rdata = [];
             $.ajax({
                 type: "POST",
-                url: "/weibo/analysis",
+                url: url,
                 contentType: "application/json",
-                data: JSON.stringify({'num': 5, 'natures': natures, 'days': days}),
+                data: JSON.stringify({'num': num, 'natures': natures, 'days': days, 'key': key}),
+                async: false,
                 success: function (msg) {
-                    var names = [];
-                    var feqs = [];
-                    for (var i = 0; i < msg.data.length; i++) {
-                        names.push(msg.data[i].name);
-                        feqs.push(msg.data[i].feq);
-                    }
-                    myChart.setOption({
-                        xAxis: {
-                            data: names
-                        },
-                        yAxis: {},
-                        series: [{
-                            name: '次数',
-                            type: 'bar',
-                            data: feqs
-                        }]
-                    });
+                    rdata =  msg.data;
                 }
-            })
-        };
+            });
+            return rdata;
+        }
 
-        window.onload = analysing(["ns", "nsf"], 5, 7);
+        function areaChartf(url) {
+            var data = analysing(url,["ns", "nsf"], 10, 7, "");
+            var names = [];
+            var feqs = [];
+            for (var i = 0; i < data.length; i++) {
+                names.push(data[i].name);
+                feqs.push(data[i].feq);
+            }
+            areaChart.setOption({
+                xAxis: {
+                    data: names
+                },
+                yAxis: {},
+                series: [{
+                    name: '次数',
+                    type: 'bar',
+                    data: feqs
+                }]
+            });
+        }
+        function fraudChartf(url) {
+            var data = analysing(url,["n", "nv"], 5, 7, "诈骗");
+            var names = [];
+            var feqs = [];
+            for (var i = 0; i < data.length; i++) {
+                names.push(data[i].name);
+                feqs.push({
+                    name:data[i].name,
+                    value:data[i].feq
+                });
+            }
+            fraudChart.setOption({
+                legend: {
+                    data: names
+                },
+                series : [
+                    {
+                        name: '热词',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['40%', '50%'],
+                        data: feqs,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+
+        function riskChartf(url) {
+            var data = analysing(url,["n", "nv"], 5, 7, "风控");
+            var names = [];
+            var feqs = [];
+            for (var i = 0; i < data.length; i++) {
+                names.push(data[i].name);
+                feqs.push({
+                    name:data[i].name,
+                    value:data[i].feq
+                });
+            }
+            riskChart.setOption({
+                legend: {
+                    data: names
+                },
+                series : [
+                    {
+                        name: '热词',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['40%', '50%'],
+                        data: feqs,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+
+        function cloudChartf(url) {
+            var data = analysing(url,["n", "v"], 100, 7, "");
+            var rdata = [];
+            for (var i = 0; i < data.length; i++) {
+                rdata.push({
+                    name:data[i].name,
+                    value:data[i].feq
+                })
+            }
+            cloudChart.setOption({
+                series: [{
+                    type : 'wordCloud',  //类型为字符云
+                    shape:'smooth',  //平滑
+                    gridSize : 2, //网格尺寸
+                    size : ['80%','80%'],
+                    //sizeRange : [ 50, 100 ],
+                    rotationRange : [ 46, 80 ], //旋转范围
+                    textStyle : {
+                        normal : {
+                            fontFamily:'sans-serif',
+                            color : function() {
+                                return 'rgb('
+                                    + [ Math.round(Math.random() * 160),
+                                        Math.round(Math.random() * 160),
+                                        Math.round(Math.random() * 160) ]
+                                        .join(',') + ')';
+                            }
+                        },
+                        emphasis : {
+                            shadowBlur : 5,  //阴影距离
+                            shadowColor : '#333'  //阴影颜色
+                        }
+                    },
+                    data:rdata
+                }]
+            });
+        }
+        $(function () {
+            $(".weibo").click(function () {
+                fraudChartf("/weibo/analysis");
+                riskChartf("/weibo/analysis");
+                areaChartf("/weibo/analysis");
+                cloudChartf("/weibo/analysis");
+                scrollTo(0, 0);
+            });
+        });
+        $(function () {
+            $(".toutiao").click(function () {
+                fraudChartf("/toutiao/analysis");
+                riskChartf("/toutiao/analysis");
+                areaChartf("/toutiao/analysis");
+                cloudChartf("/toutiao/analysis");
+                scrollTo(0, 0);
+            });
+        });
+        $(function () {
+            $(".panel-heading").click(function (e) {
+                $(".list-group").find(".actived").removeClass("actived")
+                $(this).addClass("actived");
+            });
+        });
+
+        window.onload = function () {
+            fraudChartf("/weibo/analysis");
+            riskChartf("/weibo/analysis");
+            areaChartf("/weibo/analysis");
+            cloudChartf("/weibo/analysis");
+            scrollTo(0, 0);
+            $(".weibo").addClass("actived");
+        }
 
     </script>
 </head>
@@ -63,19 +208,38 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group side-bar">
-                <a class="list-group-item" id="1">关键词</a>
-                <a class="list-group-item" id="2">地区</a>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading weibo" id="collapseListGroupHeading0" data-toggle="collapse"
+                         data-target="#collapseListGroup0" role="tab">
+                        <h4 class="panel-title">
+                            微博
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading toutiao" id="collapseListGroupHeading1" data-toggle="collapse"
+                         data-target="#collapseListGroup1" role="tab">
+                        <h4 class="panel-title">
+                            头条
+                        </h4>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-8">
-            <div id="main" style="width: 600px;height:400px; float: right"></div>
+        <div class="col-md-10">
+            <div id="area" style="width: 100%;height:400px;"></div>
+            <div class="col-md-6">
+                <div id="fraud" style="width: 100%;height:400px;"></div></div>
+            <div class="col-md-6">
+                <div id="risk" style="width: 100%;height:400px;"></div></div>
+            <div id="cloud" style="width: 100%;height:400px;"></div>
             <script type="text/javascript">
                 // 基于准备好的dom，初始化echarts实例
-                var myChart = echarts.init(document.getElementById('main'));
+                var areaChart = echarts.init(document.getElementById('area'));
                 // 指定图表的配置项和数据
-                myChart.setOption({
+                areaChart.setOption({
                     title: {
-                        text: '关键字出现频次'
+                        text: '热点地区'
                     },
                     tooltip: {},
                     legend: {
@@ -89,6 +253,111 @@
                         name: '次数',
                         type: 'bar',
                         data: []
+                    }]
+                });
+                var fraudChart = echarts.init(document.getElementById('fraud'));
+                // 指定图表的配置项和数据
+                fraudChart.setOption({
+                    title: {
+                        text: '诈骗热点词汇'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 30,
+                        top: 20,
+                        bottom: 20,
+                    },
+                    series: [
+                        {
+                            name: '热词',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['40%', '50%'],
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                });
+                var riskChart = echarts.init(document.getElementById('risk'));
+                // 指定图表的配置项和数据
+                riskChart.setOption({
+                    title: {
+                        text: '风控热点词汇'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 30,
+                        top: 20,
+                        bottom: 20,
+                    },
+                    series: [
+                        {
+                            name: '热词',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['40%', '50%'],
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                });
+                var cloudChart = echarts.init(document.getElementById('cloud'));
+                // 指定图表的配置项和数据
+                cloudChart.setOption({
+                    title: {
+                        text: '高频关键词云图'
+                    },
+                    tooltip: {},
+                    series: [{
+                        type : 'wordCloud',  //类型为字符云
+                        shape:'smooth',  //平滑
+                        gridSize : 2, //网格尺寸
+                        size : ['80%','80%'],
+                        //sizeRange : [ 50, 100 ],
+                        rotationRange : [ 46, 80 ], //旋转范围
+                        textStyle : {
+                            normal : {
+                                fontFamily:'sans-serif',
+                                color : function() {
+                                    return 'rgb('
+                                        + [ Math.round(Math.random() * 160),
+                                            Math.round(Math.random() * 160),
+                                            Math.round(Math.random() * 160) ]
+                                            .join(',') + ')';
+                                }
+                            },
+                            emphasis : {
+                                shadowBlur : 5,  //阴影距离
+                                shadowColor : '#333'  //阴影颜色
+                            }
+                        },
+                        data:[{
+                            name:"123",
+                            value:123
+                        },{
+                            name:"111",
+                            value:111
+                        }]
                     }]
                 });
             </script>

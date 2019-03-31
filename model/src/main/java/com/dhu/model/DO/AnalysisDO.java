@@ -11,4 +11,5 @@ public class AnalysisDO {
     private Integer num;
     private List<String> natures;
     private Integer days;
+    private String key;
 }

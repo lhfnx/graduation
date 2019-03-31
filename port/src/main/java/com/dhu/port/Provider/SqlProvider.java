@@ -43,4 +43,22 @@ public class SqlProvider {
             }
         }.toString();
     }
+
+    public String getKeyWords(Map<String, Object> map) {
+        String table = map.get("table").toString();
+        String keys = map.get("keys").toString();
+        String today = map.get("today").toString();
+        List<String> keyWords = StringToCollectionUtils.stringToList(keys);
+        return new SQL() {
+            {
+                SELECT("key_word");
+                FROM(table);
+                WHERE("is_active = 1");
+                for (String keyWord : keyWords) {
+                    WHERE("key_word LIKE \"%" + keyWord + "%\"");
+                }
+                WHERE("datachange_createtime > '" + today + "'");
+            }
+        }.toString();
+    }
 }

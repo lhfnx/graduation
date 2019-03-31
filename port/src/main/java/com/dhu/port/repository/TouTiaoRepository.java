@@ -23,4 +23,6 @@ public interface TouTiaoRepository {
     List<CrawlerForTouTiao> queryHot(LocalDateTime today);
 
     List<CrawlerForTouTiao> queryByPagesWithCondition(String keys, Integer offset, Integer rows);
+
+    List<String> queryKeyWord(LocalDateTime today,String keys);
 }

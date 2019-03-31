@@ -113,10 +113,28 @@
             $(".fraud").click(function () {
                 paging(1, "诈骗");
             });
+            $("#collapseListGroup2").on("click", "#f1", function () {
+                paging(1, "诈骗,金融");
+            });
+            $("#collapseListGroup2").on("click", "#f2", function () {
+                paging(1, "诈骗,贷款");
+            });
+            $("#collapseListGroup2").on("click", "#f3", function () {
+                paging(1, "诈骗,电信");
+            });
         });
         $(function () {
             $(".risk").click(function () {
                 paging(1, "风控");
+                $("#collapseListGroup1").on("click", "#r1", function () {
+                    paging(1, "风控,金融");
+                });
+                $("#collapseListGroup1").on("click", "#r2", function () {
+                    paging(1, "风控,银行");
+                });
+                $("#collapseListGroup1").on("click", "#r3", function () {
+                    paging(1, "风控,智能");
+                });
             });
         });
 
@@ -161,7 +179,7 @@
         <div class="col-md-2">
             <div class="list-group side-bar">
                 <div class="panel-primary leftMenu">
-                    <div class="panel-heading all" id="collapseListGroupHeading0" data-toggle="collapse" data-target="#collapseListGroup0" role="tab" >
+                    <div class="panel-heading all activied" id="collapseListGroupHeading0" data-toggle="collapse" data-target="#collapseListGroup0" role="tab" >
                         <h4 class="panel-title">
                             全部
                         </h4>
@@ -171,14 +189,48 @@
                     <div class="panel-heading risk" id="collapseListGroupHeading1" data-toggle="collapse" data-target="#collapseListGroup1" role="tab" >
                         <h4 class="panel-title">
                             风控
+                            <span class="glyphicon glyphicon-chevron-down right" style="float: right"></span>
                         </h4>
+
+                    </div>
+                    <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
+                    <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="collapseListGroupHeading1">
+                        <ul class="list-group" style="list-style: none">
+                            <li>
+                                <a class="list-group-item" id="r1">金融</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="r2">银行</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="r3">智能</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div class="panel-primary leftMenu">
                     <div class="panel-heading" id="collapseListGroupHeading2" data-toggle="collapse" data-target="#collapseListGroup2" role="tab" >
                         <h4 class="panel-title fraud">
                             诈骗
+                            <span class="glyphicon glyphicon-chevron-down right" style="float: right"></span>
                         </h4>
+
+                    </div>
+                    <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
+                    <div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="collapseListGroupHeading2">
+                        <ul class="list-group" style="list-style: none">
+                            <li>
+                                <a class="list-group-item" id="f1">金融诈骗</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="f2">贷款诈骗</a>
+                            </li>
+                            <li>
+                                <a class="list-group-item" id="f3">电信诈骗</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
