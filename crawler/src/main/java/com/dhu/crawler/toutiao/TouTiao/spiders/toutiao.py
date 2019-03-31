@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
-from items import ToutiaoItem, InformationItem
+from items import ToutiaoItem, InformationItem,KeyWordItem
 from urllib.parse import urlencode
 import re
 import urllib.request
 from lxml import etree
-from jieba import analyse
+from jieba import analyse,posseg
 
 
 def get_page_index(start_url, offset, keyword):
@@ -30,7 +30,7 @@ def get_page_index(start_url, offset, keyword):
 class ToutiaoSpider(scrapy.Spider):
     name = 'toutiao'
     allowed_domains = ['toutiao.com']
-    keywords = ['诈骗', '风控', '钓鱼网站']
+    keywords = ['诈骗', '风控', '钓鱼网站','投资']
     cont = 0
     keyword = keywords[0]
     offset = 0  # 偏移量
@@ -46,7 +46,11 @@ class ToutiaoSpider(scrapy.Spider):
             for node in dic.get('data'):  # data中的每个结点object
                 item = ToutiaoItem()
                 try:
-                    item['img_url'] = "http:" + node.get("image_url")
+                    imgUrl = node.get("image_url")
+                    if not imgUrl:
+                        item['img_url'] = "img/toutiao.jpg"
+                    else:
+                        item['img_url'] = "http:" + node.get("image_url")
                     item['title'] = node.get("title")
                     item['comments_count'] = node.get("comments_count")
                     item['datetime'] = node.get("datetime")
@@ -81,18 +85,26 @@ class ToutiaoSpider(scrapy.Spider):
                         for con in content:
                             sss += con.strip()
                     item['content'] = sss
-                    tfidf = analyse.extract_tags #关键词抽取
-                    keyword_list = tfidf(sss)
-                    item['keys'] = json.dumps(keyword_list)
+                    textrank = analyse.textrank #关键词抽取
+                    keyword_list = textrank(sss)
+                    keywordItems = []
+                    for ky in keyword_list:
+                        words = posseg.cut(ky)
+                        for w in words:
+                            keywordItem = KeyWordItem(w.word,w.flag)
+                            keywordItems.append(keywordItem.__dict__)
+                    myky = KeyWordItem(self.keyword,"ky")
+                    keywordItems.append(myky.__dict__) #搜索关键词添加进关键词列表
+                    item['keys'] = json.dumps(keywordItems,ensure_ascii=False)
                     yield item
                 except:
                     pass
-        if self.offset < 40:
+        if self.offset < 300:
             self.offset += 20
             url = get_page_index(self.start_url, self.offset, self.keyword)
             yield scrapy.Request(url, callback=self.parse)  # 迭代调用parse方法
-        if self.offset >= 40:
-            if (self.cont < len(self.keywords)):
+        if self.offset >= 300:
+            if (self.cont < len(self.keywords)-1):
                 self.cont = self.cont + 1
                 self.keyword = self.keywords[self.cont]
                 self.offset = 0

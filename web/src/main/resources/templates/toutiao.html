@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>头条</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="css/mystyle.css">
     <link rel="stylesheet" href="css/pagination.css">
@@ -25,13 +26,15 @@
                             "                     <div class=\"col-sm-5\"><img src=\"" + msg.data.voList[i].imgUrl + "\"> </div>\n" +
                             "                     <div class=\"col-sm-7\">\n" +
                             "                         <div class=\"title\">\n" +
-                            "                             <a href=\" target=\"_blank\"" + msg.data.voList[i].connectUrl + "\">" + msg.data.voList[i].title + "</a>"
+                            "                             <a target=\"_blank\" href=\"" + msg.data.voList[i].connectUrl + "\">" + msg.data.voList[i].title + "</a>"
                         str += "</div>\n" +
                             "                         <div class=\"info\">\n" +
                             "                             <span>" + msg.data.voList[i].informationDO.author + "</span> *\n" +
-                            "                             <span>" + msg.data.voList[i].informationDO.comment + "评论</span> *\n" +
-                            "                             <span>" + msg.data.voList[i].informationDO.reading + "阅读</span> *\n" +
-                            "                         </div>\n" +
+                            "                             <span>" + msg.data.voList[i].informationDO.comment + "评论</span> <br>" ;
+                        for (var j = 0; j < msg.data.voList[i].keyWords.length; j++) {
+                            str += "                             <span class=\"label label-info\">" + msg.data.voList[i].keyWords[j].keyWord + "</span>";
+                        }
+                            str += "                         </div>\n" +
                             "                     </div>";
                         str += "</div>";
                     }
@@ -91,7 +94,7 @@
                     for (var i = 0; i < msg.data.length; i++) {
                         str += "<div class=\"list-item\">\n" +
                             "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].title + "</a>\n" +
-                            "                            <div class=\"desc\">" + msg.data[i].informationDO.reading + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.comment + "评论 " + "</div>\n" +
                             "                        </div>";
                     }
                     str += "";
@@ -100,6 +103,39 @@
                 }
             });
         }
+
+        $(function () {
+            $(".all").click(function () {
+                paging(1, "");
+            });
+        });
+        $(function () {
+            $(".fraud").click(function () {
+                paging(1, "诈骗");
+            });
+        });
+        $(function () {
+            $(".risk").click(function () {
+                paging(1, "风控");
+            });
+        });
+
+        $(function () {
+            $(".panel-heading").click(function (e) {
+                /*切换折叠指示图标*/
+                $(this).find("span").toggleClass("glyphicon-chevron-down");
+                $(this).find("span").toggleClass("glyphicon-chevron-up");
+                $(".list-group").find(".actived").removeClass("actived")
+                $(this).addClass("actived");
+            });
+        });
+
+        $(function () {
+            $(".list-group-item").click(function (e) {
+                $(".list-group").find(".actived").removeClass("actived")
+                $(this).addClass("actived");
+            });
+        });
 
         window.onload = paging(1, "");
         window.onload = hotting(10);
@@ -124,10 +160,27 @@
     <div class="row">
         <div class="col-md-2">
             <div class="list-group side-bar">
-                <button class="list-group-item active">全部</button>
-                <button class="list-group-item">风控</button>
-                <button class="list-group-item">欺诈</button>
-                <button class="list-group-item">案例</button>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading all" id="collapseListGroupHeading0" data-toggle="collapse" data-target="#collapseListGroup0" role="tab" >
+                        <h4 class="panel-title">
+                            全部
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading risk" id="collapseListGroupHeading1" data-toggle="collapse" data-target="#collapseListGroup1" role="tab" >
+                        <h4 class="panel-title">
+                            风控
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel-primary leftMenu">
+                    <div class="panel-heading" id="collapseListGroupHeading2" data-toggle="collapse" data-target="#collapseListGroup2" role="tab" >
+                        <h4 class="panel-title fraud">
+                            诈骗
+                        </h4>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-7">

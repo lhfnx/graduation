@@ -1,5 +1,7 @@
 package com.dhu.service;
 
+import com.dhu.model.DO.AnaDO;
+import com.dhu.model.DO.AnalysisDO;
 import com.dhu.model.DO.HotDO;
 import com.dhu.model.DO.ListShowDO;
 import com.dhu.model.VO.TouTiao.TouTiaoListVO;
@@ -17,4 +19,6 @@ public interface TouTiaoService {
     CrawlerForTouTiao getInformation(Long id);
 
     List<TouTiaoVO> getTodayInformationByHot(HotDO hotDO);
+
+    List<AnaDO> getAnalysis(AnalysisDO analysisDO);
 }

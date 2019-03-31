@@ -6,6 +6,7 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+import json
 
 
 class ToutiaoItem(scrapy.Item):
@@ -30,3 +31,14 @@ class InformationItem:
     def __init__(self, author, comment):
         self.author = author
         self.comment = comment
+
+class KeyWordItem:
+    def __init__(self,keyWord,nature):
+        self.keyWord = keyWord
+        self.nature = nature
+
+class UserEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, KeyWordItem):
+            return obj.name
+        return json.JSONEncoder.default(self, obj)

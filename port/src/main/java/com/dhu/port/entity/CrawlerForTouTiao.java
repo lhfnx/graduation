@@ -13,11 +13,9 @@ import java.sql.Timestamp;
 public class CrawlerForTouTiao implements Serializable {
     private Long id;
     private String title;
-    private String summary;
     private String connectUrl;
     private Timestamp DataChangeCreateTime;
     private String keyWord;
-    private Integer classify;
     private Boolean isActive;
     private String information;
     private Integer hotDegree;

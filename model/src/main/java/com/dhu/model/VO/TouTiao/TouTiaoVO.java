@@ -15,11 +15,9 @@ import java.util.List;
 public class TouTiaoVO {
     private Long id;
     private String title;
-    private String summary;
     private String connectUrl;
     private Timestamp DataChangeCreateTime;
     private List<KeyWordDO> keyWords;
-    private Integer classify;
     private Boolean isActive;
     private InformationDO informationDO;
     private Integer hotDegree;

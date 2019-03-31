@@ -19,9 +19,9 @@ class ToutiaoPipeline(object):
                   `title` varchar(500) NOT NULL DEFAULT '' COMMENT '文章标题',
                   `connect_url` varchar(1000) NOT NULL DEFAULT '' COMMENT '跳转链接',
                   `datachange_createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-                  `key_word` varchar(500) DEFAULT NULL COMMENT '关键词',
+                  `key_word` varchar(1000) DEFAULT NULL COMMENT '关键词',
                   `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '逻辑删除',
-                  `information` varchar(1000) DEFAULT NULL COMMENT '信息',
+                  `information` varchar(500) DEFAULT NULL COMMENT '信息',
                   `hot_degree` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '热度',
                   `img_url` varchar(1000) DEFAULT NULL COMMENT '图片链接',
                   PRIMARY KEY (`id`)

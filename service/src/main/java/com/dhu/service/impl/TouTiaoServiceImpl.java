@@ -2,10 +2,7 @@ package com.dhu.service.impl;
 
 import com.dhu.common.utils.BeanUtil;
 import com.dhu.common.utils.JsonUtils;
-import com.dhu.model.DO.HotDO;
-import com.dhu.model.DO.InformationDO;
-import com.dhu.model.DO.KeyWordDO;
-import com.dhu.model.DO.ListShowDO;
+import com.dhu.model.DO.*;
 import com.dhu.model.VO.TouTiao.TouTiaoListVO;
 import com.dhu.model.VO.TouTiao.TouTiaoVO;
 import com.dhu.port.entity.CrawlerForTouTiao;
@@ -34,6 +31,10 @@ public class TouTiaoServiceImpl implements TouTiaoService {
 
     @Autowired
     private CacheService cacheService;
+
+    private List<String> prefix = Lists.newArrayList("n", "a");
+    private List<String> filterPrefix = Lists.newArrayList("nx");
+
 
     @Override
     public List<TouTiaoVO> getInformationFromCache(Integer num) {
@@ -92,8 +93,23 @@ public class TouTiaoServiceImpl implements TouTiaoService {
             vo.setInformationDO(new InformationDO());
         }
         if (StringUtils.isNotEmpty(crawler.getKeyWord())) {
-            vo.setKeyWords(JsonUtils.jsonToList(crawler.getKeyWord(), KeyWordDO.class));
+            vo.setKeyWords(JsonUtils.jsonToList(crawler.getKeyWord(), KeyWordDO.class)
+                    .stream().filter(k -> fitStartWith(k.getNature())).distinct().collect(Collectors.toList()));
         }
         return vo;
+    }
+
+    private boolean fitStartWith(String str) {
+        for (String p : prefix) {
+            if (str.startsWith(p) && !filterPrefix.contains(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<AnaDO> getAnalysis(AnalysisDO analysisDO) {
+        return null;
     }
 }

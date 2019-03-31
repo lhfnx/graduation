@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>微博</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="css/mystyle.css">
     <link rel="stylesheet" href="css/pagination.css">
@@ -147,8 +147,15 @@
                 paging(1, "风控,互联网");
             });
         });
-        $(function(){
-            $(".panel-heading").click(function(e){
+
+        $(function () {
+            $(".inves").click(function () {
+                paging(1, "投资");
+            });
+        });
+
+        $(function () {
+            $(".panel-heading").click(function (e) {
                 /*切换折叠指示图标*/
                 $(this).find("span").toggleClass("glyphicon-chevron-down");
                 $(this).find("span").toggleClass("glyphicon-chevron-up");
@@ -158,13 +165,7 @@
         });
 
         $(function () {
-            $(".inves").click(function () {
-                paging(1, "投资");
-            });
-        });
-
-        $(function(){
-            $(".list-group-item").click(function(e){
+            $(".list-group-item").click(function (e) {
                 $(".list-group").find(".actived").removeClass("actived")
                 $(this).addClass("actived");
             });
@@ -197,21 +198,24 @@
         <div class="col-md-2">
             <div class="list-group side-bar">
                 <div class="panel-primary leftMenu">
-                    <div class="panel-heading all" id="collapseListGroupHeading0" data-toggle="collapse" data-target="#collapseListGroup0" role="tab" >
+                    <div class="panel-heading all" id="collapseListGroupHeading0" data-toggle="collapse"
+                         data-target="#collapseListGroup0" role="tab">
                         <h4 class="panel-title">
                             全部
                         </h4>
                     </div>
                 </div>
                 <div class="panel-primary leftMenu">
-                    <div class="panel-heading risk" id="collapseListGroupHeading1" data-toggle="collapse" data-target="#collapseListGroup1" role="tab" >
+                    <div class="panel-heading risk" id="collapseListGroupHeading1" data-toggle="collapse"
+                         data-target="#collapseListGroup1" role="tab">
                         <h4 class="panel-title">
                             风控
                             <span class="glyphicon glyphicon-chevron-down right" style="float: right"></span>
                         </h4>
                     </div>
                     <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
-                    <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1">
+                    <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="collapseListGroupHeading1">
                         <ul class="list-group" style="list-style: none">
                             <li>
                                 <a class="list-group-item" id="r1">原油</a>
@@ -229,14 +233,16 @@
                     </div>
                 </div><!--panel end-->
                 <div class="panel-primary leftMenu">
-                    <div class="panel-heading" id="collapseListGroupHeading2" data-toggle="collapse" data-target="#collapseListGroup2" role="tab" >
+                    <div class="panel-heading" id="collapseListGroupHeading2" data-toggle="collapse"
+                         data-target="#collapseListGroup2" role="tab">
                         <h4 class="panel-title fraud">
                             诈骗
                             <span class="glyphicon glyphicon-chevron-down right" style="float: right"></span>
                         </h4>
                     </div>
                     <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
-                    <div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading2">
+                    <div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="collapseListGroupHeading2">
                         <ul class="list-group" style="list-style: none">
                             <li>
                                 <a class="list-group-item" id="f1">网络诈骗</a>
@@ -254,12 +260,13 @@
                     </div>
                 </div><!--panel end-->
                 <div class="panel-primary leftMenu">
-                <div class="panel-heading inves" id="collapseListGroupHeading3" data-toggle="collapse" data-target="#collapseListGroup3" role="tab" >
-                    <h4 class="panel-title">
-                        投资
-                    </h4>
+                    <div class="panel-heading inves" id="collapseListGroupHeading3" data-toggle="collapse"
+                         data-target="#collapseListGroup3" role="tab">
+                        <h4 class="panel-title">
+                            投资
+                        </h4>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
         <div class="col-md-7">
