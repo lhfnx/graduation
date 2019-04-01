@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import json
-from items import ToutiaoItem, InformationItem,KeyWordItem
+from TouTiao.items import ToutiaoItem, InformationItem,KeyWordItem
 from urllib.parse import urlencode
 import re
 import urllib.request

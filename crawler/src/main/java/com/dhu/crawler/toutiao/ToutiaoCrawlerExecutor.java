@@ -26,7 +26,7 @@ public class ToutiaoCrawlerExecutor {
 
     @Scheduled(cron = "0 0 0/5 * * ?")
     public void execute() {
-        File file = new File("src\\main\\java\\com\\dhu\\crawler\\toutiao");
+        File file = new File("crawler\\src\\main\\java\\com\\dhu\\crawler\\toutiao\\TouTiao");
         String c = "scrapy crawl toutiao";
         InputStream is2 = null;
         BufferedReader br2 = null;

@@ -36,9 +36,3 @@ class KeyWordItem:
     def __init__(self,keyWord,nature):
         self.keyWord = keyWord
         self.nature = nature
-
-class UserEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, KeyWordItem):
-            return obj.name
-        return json.JSONEncoder.default(self, obj)
