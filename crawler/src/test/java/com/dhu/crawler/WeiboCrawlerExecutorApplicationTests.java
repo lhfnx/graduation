@@ -1,13 +1,13 @@
 package com.dhu.crawler;
 
 import com.dhu.crawler.toutiao.ToutiaoCrawlerExecutor;
-import com.dhu.crawler.weibo.WeiboCrawlerExecutor;
 import com.dhu.crawler.weibo.CrawlerStoreDO;
+import com.dhu.crawler.weibo.WeiboCrawlerExecutor;
 import com.dhu.crawler.weibo.WeiboIPUtils;
 import com.google.common.collect.Lists;
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.mining.word.TfIdfCounter;
 import com.hankcs.hanlp.seg.Segment;
-import com.hankcs.hanlp.summary.TextRankKeyword;
 import com.hankcs.hanlp.tokenizer.IndexTokenizer;
 import org.ansj.app.keyword.KeyWordComputer;
 import org.ansj.app.keyword.Keyword;
@@ -15,8 +15,6 @@ import org.ansj.splitWord.analysis.BaseAnalysis;
 import org.ansj.splitWord.analysis.IndexAnalysis;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -66,7 +66,9 @@ public class WeiboCrawlerExecutorApplicationTests {
 		String str = "【立陶宛一男子诈骗谷歌脸书 涉案1.22亿刀被判30年】近日，据国外媒体报道，一名立陶宛男子在2013-2015年期间，通过伪造支票的方式，诈骗了脸书和谷歌两家公司，涉案金额高达1.22" +
 				"亿美金（约合8.2亿人民币）。\n" +
 				"该男子伪造了订单发票和各式虚假文书，用邮件一起发送，为了虚构合法的假象，他还伪造了订单合同已经各种签名信件。此人现在面临美国对他的电信诈骗，巨额盗窃和洗钱的指控，并可能被判处长达30年的监禁。";
-		List<String> keywords = TextRankKeyword.getKeywordList(str, 10);
+//		List<String> keywords = TextRankKeyword.getKeywordList(str, 10);
+		TfIdfCounter keywordExtractor = new TfIdfCounter();
+		List<String> keywords = keywordExtractor.getKeywordsWithTfIdf(str,10).stream().map(Map.Entry::getKey).collect(Collectors.toList());
 		System.out.println(keywords.toString());
 		KeyWordComputer ky = new KeyWordComputer(10);
 		List<Keyword> keywordList = ky.computeArticleTfidf(str);

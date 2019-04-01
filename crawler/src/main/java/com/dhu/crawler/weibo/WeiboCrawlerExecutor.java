@@ -52,48 +52,52 @@ public class WeiboCrawlerExecutor {
     private CacheService cacheService;
     @Autowired
     private WeiboIPUtils ipUtils;
+    private String uesHost = null;
 
     @Scheduled(cron = "0 0 0/5 * * ?")
     public void execute() {
-        try {
-            cacheService.refreshConfig();
-            logger.info("微博爬虫开始");
-            getConfig();
-            hosts = ipUtils.execute();
-            Map<String, String> cookie = CookieUtils.getCookie();
-            store = Lists.newArrayList();
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(dateFormat);
-            String now = LocalDateTime.now().format(timeFormatter);
-            String before = LocalDateTime.now().minusHours(interval).format(timeFormatter);
-            for (String queryWord : queryKey) {
-                doCrawler(cookie, null, now, before, queryWord, 1);
-                Thread.sleep((random.nextInt(10) + 1) * 1000);
+        cacheService.refreshConfig();
+        logger.info("微博爬虫开始");
+        getConfig();
+        hosts = ipUtils.execute();
+        Map<String, String> cookie = CookieUtils.getCookie();
+        store = Lists.newArrayList();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(dateFormat);
+        uesHost = null;
+        for (String queryWord : queryKey) {
+            for (int i = interval; i >= 0; i--) {
+                try {
+                    String before = LocalDateTime.now().minusHours(i).format(timeFormatter);
+                    String now = LocalDateTime.now().minusHours(i + 1).format(timeFormatter);
+                    doCrawler(cookie, before, now, queryWord, 1);
+                    Thread.sleep((random.nextInt(10) + 1) * 1000);
+                } catch (Exception e) {
+                    logger.error("爬虫异常", e);
+                }
             }
-            List<CrawlerStoreDO> result = Lists.newArrayList();
-            store.forEach(s -> {
-                boolean flag = filterKeyWord(s);
-                if (flag) {
-                    for (CrawlerStoreDO c : result) {
-                        if (c.getUrl().equals(s.getUrl())) {
-                            flag = false;
-                            break;
-                        }
+        }
+        List<CrawlerStoreDO> result = Lists.newArrayList();
+        store.forEach(s -> {
+            boolean flag = filterKeyWord(s);
+            if (flag) {
+                for (CrawlerStoreDO c : result) {
+                    if (c.getUrl().equals(s.getUrl())) {
+                        flag = false;
+                        break;
                     }
                 }
-                if (flag) {
-                    result.add(s);
-                }
+            }
+            if (flag) {
+                result.add(s);
+            }
 
-            });
-            storeCrawler(result);
-            logger.info("微博爬虫运行完毕");
-        } catch (Exception e) {
-            logger.error("爬虫异常", e);
-        }
+        });
+        storeCrawler(result);
+        logger.info("微博爬虫运行完毕");
         cacheService.refreshCache();
     }
 
-    private void doCrawler(Map<String, String> cookie, String host, String now, String before, String queryWord,
+    private void doCrawler(Map<String, String> cookie, String now, String before, String queryWord,
                            Integer page) throws Exception {
         String url = "https://s.weibo.com/weibo/%25E9%25A3%258E%25E6%258E%25A7?q=" + queryWord +
                 "&scope=ori&suball=1&timescope=custom:" + before + ":" + now + "&Refer=g&page=" + page.toString();
@@ -102,8 +106,8 @@ public class WeiboCrawlerExecutor {
                         "Chrome/72.0.3626.121 Safari/537.36")
                 .cookies(cookie)
                 .timeout(10 * 1000);
-        if (StringUtils.isNotEmpty(host)) {
-            connection = connection.proxy(host.split(":")[0], NumberUtils.toInt((host.split(":")[1])));
+        if (StringUtils.isNotEmpty(uesHost)) {
+            connection = connection.proxy(uesHost.split(":")[0], NumberUtils.toInt((uesHost.split(":")[1])));
         }
         Document document = connection.get();
         if (document.baseUri().contains("search_need_login")) {
@@ -114,11 +118,11 @@ public class WeiboCrawlerExecutor {
                     document = connection.url(url).proxy(h.split(":")[0], NumberUtils.toInt((h.split(":")[1])))
                             .cookies(cookie).timeout(10 * 1000).get();
                     if (!document.baseUri().contains("search_need_login")) {
-                        logger.info("更换ip成功");
-                        host = h;
+                        logger.info("更换ip成功" + h);
+                        uesHost = h;
                         break;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     continue;
                 }
             }
@@ -186,7 +190,7 @@ public class WeiboCrawlerExecutor {
         Element pages = document.getElementsByClass("s-scroll").first();
         if (Objects.nonNull(pages) && pages.getElementsByTag("li").size() != page) {
             Thread.sleep((random.nextInt(10) + 1) * 1000);
-            doCrawler(cookie, host, now, before, queryWord, page + 1);
+            doCrawler(cookie, now, before, queryWord, page + 1);
         }
     }
 

@@ -16,7 +16,6 @@ public class CrawlerForWeiBo implements Serializable {
     private String connectUrl;
     private Timestamp DataChangeCreateTime;
     private String keyWord;
-    private Integer classify;
     private Boolean isActive;
     private String information;
     private Integer hotDegree;

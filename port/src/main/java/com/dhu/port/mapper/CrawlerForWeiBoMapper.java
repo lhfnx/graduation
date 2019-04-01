@@ -18,7 +18,6 @@ public interface CrawlerForWeiBoMapper {
             @Result(property = "connectUrl", column = "connect_url"),
             @Result(property = "DataChangeCreateTime", column = "datachange_createtime"),
             @Result(property = "keyWord", column = "key_word"),
-            @Result(property = "classify", column = "classify"),
             @Result(property = "isActive", column = "is_active"),
             @Result(property = "information", column = "information"),
             @Result(property = "hotDegree", column = "hot_degree"),

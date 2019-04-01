@@ -30,7 +30,7 @@ def get_page_index(start_url, offset, keyword):
 class ToutiaoSpider(scrapy.Spider):
     name = 'toutiao'
     allowed_domains = ['toutiao.com']
-    keywords = ['诈骗', '风控', '钓鱼网站','投资']
+    keywords = ['电信诈骗','金融诈骗','贷款诈骗','交友诈骗','兼职诈骗', '金融风控','银行风控','智能风控']
     cont = 0
     keyword = keywords[0]
     offset = 0  # 偏移量

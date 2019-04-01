@@ -18,7 +18,6 @@ public class WeiBoVO {
     private String connectUrl;
     private Timestamp DataChangeCreateTime;
     private List<KeyWordDO> keyWords;
-    private Integer classify;
     private Boolean isActive;
     private InformationDO informationDO;
     private Integer hotDegree;
