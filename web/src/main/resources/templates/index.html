@@ -37,11 +37,9 @@
                         str += "</div>";
                     }
                     str += "";
-                    //console.log(str);  //可以先开启这个看看能不能请求到数据
                     $(".news-list").html(str);
                 }
-
-            });
+            });//通过ajax拼接加载首页推送的微博新闻内容
             $.ajax({
                 type: "POST",
                 url: "/toutiao/cache",
@@ -66,10 +64,9 @@
                         str += "</div>";
                     }
                     str += "";
-                    //console.log(str);  //可以先开启这个看看能不能请求到数据
                     $(".news-list2").html(str);
                 }
-            });
+            });//通过ajax拼接加载首页推送的头条新闻内容
         }
 
         function hotting(num) {
@@ -85,14 +82,13 @@
                     for (var i = 0; i < msg.data.length; i++) {
                         str += "<div class=\"list-item\">\n" +
                             "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].summary.slice(0, 25) + "..." + "</a>\n" +
-                            "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "点赞 " + msg.data[i].informationDO.comment + "评论</div>\n" +
                             "                        </div>";
                     }
                     str += "";
-                    //console.log(str);  //可以先开启这个看看能不能请求到数据
                     $("#weibo").html(str);
                 }
-            });
+            });//通过ajax拼接加载首页推送的微博24小时热闻内容
             $.ajax({
                 type: "POST",
                 url: "/toutiao/hot",
@@ -109,10 +105,9 @@
                             "                        </div>";
                     }
                     str += "";
-                    //console.log(str);  //可以先开启这个看看能不能请求到数据
                     $("#toutiao").html(str);
                 }
-            });
+            });//通过ajax拼接加载首页推送的头条24小时热闻内容
         }
 
         window.onload = caching(4);
@@ -169,12 +164,6 @@
             <div class="side-bar-card ">
                 <div class="card-title">24小时热闻</div>
                 <div id="myCarousel" class="carousel slide">
-                    <!--轮播（Carousel）指标-->
-                    <!--<ol class="carousel-indicators" style="float: bottom">-->
-                    <!--<li data-target="#myCarousel" data-slide-to="0" class="active"></li>-->
-                    <!--<li data-target="#myCarousel" data-slide-to="1"></li>-->
-                    <!--</ol>-->
-                    <!--轮播（Carousel）项目 -->
                     <div class="carousel-inner">
                         <div class="item active">
                             <div class="card-body">

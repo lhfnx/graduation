@@ -6,10 +6,10 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/graduation?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=false&serverTimezone=UTC
-    username: root
-    password: lhf19970213
     hikari:
       connection-init-sql: SET NAMES utf8mb4
+    username: root
+    password: lhf19970213
 server:
   compression:
     enabled: true

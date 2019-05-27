@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Set;
 
+//将字符串变为集合，如1,2,3->{1,2,3}
 public class StringToCollectionUtils {
     private static final String DEFAULT_SEP = ",";
 

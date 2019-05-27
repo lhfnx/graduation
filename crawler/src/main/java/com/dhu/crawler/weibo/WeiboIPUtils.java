@@ -20,11 +20,14 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+/**
+ * 构建IP池
+ */
 @Component
 public class WeiboIPUtils {
     private static final Logger logger = LoggerFactory.getLogger(WeiboIPUtils.class);
     @Autowired
-    @Qualifier("graduationThreadPool")
+    @Qualifier("weiBoPool")
     ExecutorService executorService;
 
     public List<String> execute() {
@@ -33,7 +36,7 @@ public class WeiboIPUtils {
         List<String> result = Lists.newArrayList();
         for (String s : Lists.newArrayList("浙江","北京","上海","广东","山东","湖北")) {
             try {
-                Document hostDoc = Jsoup.connect("http://www.89ip.cn/tqdl.html?api=1&num=30&port=&address=" + s + "&isp=").get();
+                Document hostDoc = Jsoup.connect("http://www.89ip.cn/tqdl.html?api=1&num=30&port=&address=" + s + "&isp=").get();//免费代理IP
 //                String url = "http://www.66ip.cn/mo.php?sxb="+ URLEncoder.encode(s, "gbk")+"&tqsl=10&port=&export=&ktip=&sxa=&submit=";
 //                Document hostDoc = Jsoup.connect(url).url(new URL(url)).get();
                 List<String> hosts = StringToCollectionUtils.stringToList(hostDoc.text(), " ");
@@ -63,6 +66,7 @@ public class WeiboIPUtils {
         return result;
     }
 
+    //验证IP有效
     private CompletableFuture<String> getIP(String ip) {
         return CompletableFuture.supplyAsync(() -> {
             Document document = null;

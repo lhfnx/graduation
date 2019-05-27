@@ -17,19 +17,24 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 头条定时启动器
+ */
 @Component
 public class ToutiaoCrawlerExecutor {
     private static final Logger logger = LoggerFactory.getLogger(ToutiaoCrawlerExecutor.class);
     @Autowired
-    @Qualifier("graduationThreadPool")
+    @Qualifier("touTiaoPool")
     ExecutorService executorService;
 
+    /**
+     * 命令行启动PY文件
+     * 线程池打印日志，保证两种日志都正常输出不阻塞
+     */
     @Scheduled(cron = "0 0 0/5 * * ?")
     public void execute() {
-        File file = new File("crawler\\src\\main\\java\\com\\dhu\\crawler\\toutiao\\TouTiao");
+        File file = new File("crawler\\src\\main\\java\\com\\dhu\\crawler\\toutiao\\TouTiao");//头条PY文件位置
         String c = "scrapy crawl toutiao";
-        InputStream is2 = null;
-        BufferedReader br2 = null;
         List<CompletableFuture> completableFutures = Lists.newArrayListWithCapacity(2);
         try {
             Process process = Runtime.getRuntime().exec(c, null, file);

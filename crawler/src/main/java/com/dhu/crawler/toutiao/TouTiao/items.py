@@ -9,7 +9,7 @@ import scrapy
 import json
 
 
-class ToutiaoItem(scrapy.Item):
+class ToutiaoItem(scrapy.Item):# 定义爬取的网页结构数据
     # define the fields for your item here like:
     # key = scrapy.Field()
     img_url = scrapy.Field()

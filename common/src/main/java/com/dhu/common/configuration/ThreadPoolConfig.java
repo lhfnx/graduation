@@ -13,21 +13,42 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ComponentScan("com.dhu.common.configuration")
 public class ThreadPoolConfig {
     private static final Logger logger = LoggerFactory.getLogger(ThreadPoolConfig.class);
-    private static final AtomicInteger count = new AtomicInteger(1);
+    private static final AtomicInteger weiBoCount = new AtomicInteger(1);
+    private static final AtomicInteger touTiaoCount = new AtomicInteger(1);
 
-    @Bean(name = "graduationThreadPool")
-    public ExecutorService graduationServiceExecutor() {
-        logger.info("开始加载线程池:graduationThreadPool");
+    //微博爬虫线程池
+    @Bean(name = "weiBoPool")
+    public ExecutorService wiBoExecutor() {
+        logger.info("开始加载线程池:wiBoPool");
         return new ThreadPoolExecutor(10, 10, 1000, TimeUnit.MILLISECONDS,
                 new LinkedBlockingDeque<>(1000),
                 r -> {
-                    Thread t = new Thread(r, "GraduationThread-" + count.getAndIncrement());
+                    Thread t = new Thread(r, "weiBoThread-" + weiBoCount.getAndIncrement());
                     t.setDaemon(false);
-                    logger.info("graduationThreadPool启动新线程:" + t.getName());
+                    logger.info("weiBoPool启动新线程:" + t.getName());
                     return t;
                 }, (r, executor) -> {
             if (!executor.isShutdown()) {
-                logger.error("graduationThreadPool触发拒绝策略");
+                logger.error("weiBoPool触发拒绝策略");
+                r.run();
+            }
+        });
+    }
+
+    //头条爬虫线程池
+    @Bean(name = "touTiaoPool")
+    public ExecutorService touTiaoExecutor() {
+        logger.info("开始加载线程池:touTiaoPool");
+        return new ThreadPoolExecutor(2, 2, 1000, TimeUnit.MILLISECONDS,
+                new LinkedBlockingDeque<>(1000),
+                r -> {
+                    Thread t = new Thread(r, "touTiaoThread-" + touTiaoCount.getAndIncrement());
+                    t.setDaemon(false);
+                    logger.info("touTiaoPool启动新线程:" + t.getName());
+                    return t;
+                }, (r, executor) -> {
+            if (!executor.isShutdown()) {
+                logger.error("touTiaoPool触发拒绝策略");
                 r.run();
             }
         });

@@ -42,7 +42,6 @@
                         str += "</div>";
                     }
                     str += "";
-                    //console.log(str);  //可以先开启这个看看能不能请求到数据
                     $(".news-list").html(str);
                     var pages = msg.data.maxIndex;//这里data里面有数据总量
                     var element = $('#pageUl');//对应下面ul的ID
@@ -81,7 +80,7 @@
                     element.bootstrapPaginator(options);
                     scrollTo(0, 0);
                 }
-            });
+            });//通过动态分页插件实现列表页ajax拼接加载
         };
 
         function hotting(num) {
@@ -97,14 +96,14 @@
                     for (var i = 0; i < msg.data.length; i++) {
                         str += "<div class=\"list-item\">\n" +
                             "                            <a class=\"title\" target=\"_blank\" href=\"" + msg.data[i].connectUrl + "\">" + msg.data[i].summary.slice(0, 50) + "..." + "</a>\n" +
-                            "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "阅读 " + msg.data[i].informationDO.comment + "评论</div>\n" +
+                            "                            <div class=\"desc\">" + msg.data[i].informationDO.like + "点赞 " + msg.data[i].informationDO.comment + "评论 "
+                            + msg.data[i].informationDO.forward + "转发 " + msg.data[i].informationDO.favorite + "收藏</div>\n" +
                             "                        </div>";
                     }
                     str += "";
-                    //console.log(str);  //可以先开启这个看看能不能请求到数据
                     $(".list").html(str);
                 }
-            });
+            });//ajax拼接加载24小时热闻
         }
 
         $(function () {
@@ -127,7 +126,7 @@
             });
             $("#collapseListGroup2").on("click", "#f4", function () {
                 paging(1, "诈骗,冒充");
-            });
+            });// 菜单栏诈骗分类下根据关键词匹配后在数据库中筛选内容；
         });
 
         $(function () {
@@ -145,7 +144,7 @@
             });
             $("#collapseListGroup1").on("click", "#r4", function () {
                 paging(1, "风控,互联网");
-            });
+            });// 菜单栏风控分类下根据关键词匹配后在数据库中筛选内容；
         });
 
         $(function () {

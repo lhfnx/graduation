@@ -11,8 +11,10 @@ from TouTiao.MySqlHelperAgain import MysqlHelper
 class ToutiaoPipeline(object):
     def __init__(self):
         self.f = open("theme.txt", 'w', encoding='utf-8')
-        self.helper = MysqlHelper('localhost', 3306, 'graduation', 'root', 'lhf19970213', 'utf8')
+        # 实例化数据库
+        self.helper = MysqlHelper('localhost', 3306, 'graduation', 'root', 'lhf19970213', 'utf8') # 实例化数据库
         self.helper.open()
+        # sql语句建表
         self.tableName = "crawler_toutiao"
         sql = """  create table if not exists %s(
                   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
@@ -30,11 +32,7 @@ class ToutiaoPipeline(object):
 
     def process_item(self, item, spider):
         if item['title'] != None:
-            # sql = "insert into toutiao(datetime,platform,announcer,theme,content,url,emotion,attitude_count,repost_count,comments_count,attention,sensitiveWords,information) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % \
-            #       (item['datetime'], self.platform, item['announcer'], item['theme'],
-            #        item['content'], item['url'], None, item['attitude_count'],
-            #        item['repost_count'], item['comments_count'], item['attention'], None, item['information'])
-
+        # sql语句存储数据
             sql = "insert into crawler_toutiao(title,connect_url,datachange_createtime,key_word,is_active,information,hot_degree,img_url) VALUES('%s','%s','%s','%s', '%d','%s','%s','%s')" % \
                   (item['title'],item['connect_url'],item['datetime'],item['keys'],1,  item['information'],  item['hot_degree'], item['img_url'])
 

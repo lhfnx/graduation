@@ -8,7 +8,11 @@ import org.apache.ibatis.jdbc.SQL;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 动态条件SQL
+ */
 public class SqlProvider {
+    //动态关键词获取信息
     public String getListByKeys(Map<String, Object> map) {
         String table = map.get("table").toString();
         String keys = map.get("keys").toString();
@@ -28,6 +32,7 @@ public class SqlProvider {
         }.toString();
     }
 
+    //动态关键词获取数量
     public String getCountByKeys(Map<String, Object> map) {
         String table = map.get("table").toString();
         String keys = map.get("keys").toString();
@@ -44,6 +49,7 @@ public class SqlProvider {
         }.toString();
     }
 
+    //动态词性获取关键词
     public String getKeyWords(Map<String, Object> map) {
         String table = map.get("table").toString();
         String keys = map.get("keys").toString();

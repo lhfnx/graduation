@@ -1,5 +1,6 @@
 package com.dhu.crawler.weibo;
 
+import com.alibaba.fastjson.JSON;
 import com.dhu.common.utils.CookieUtils;
 import com.dhu.common.utils.JsonUtils;
 import com.dhu.common.utils.StringToCollectionUtils;
@@ -11,6 +12,7 @@ import com.dhu.port.repository.WeiBoRepository;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.Connection;
@@ -30,12 +32,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 微博爬虫启动器
+ */
 @Component
 public class WeiboCrawlerExecutor {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Random random = new Random(System.currentTimeMillis());
     private List<CrawlerStoreDO> store = Lists.newArrayList();
+    private List<CrawlerStoreDO> lastStore = Lists.newArrayList();
+    private Long lastRunTime = null;
     private Set<String> filterKey = Sets.newHashSet();
     private List<String> queryKey = Lists.newArrayList();
     private Integer interval = 3;
@@ -52,35 +59,41 @@ public class WeiboCrawlerExecutor {
     private CacheService cacheService;
     @Autowired
     private WeiboIPUtils ipUtils;
-    private String uesHost = null;
+    private String useHost = null;
+
+
 
     @Scheduled(cron = "0 0 0/5 * * ?")
     public void execute() {
         cacheService.refreshConfig();
         logger.info("微博爬虫开始");
-        getConfig();
-        hosts = ipUtils.execute();
+        getConfig();//读取配置
         Map<String, String> cookie = CookieUtils.getCookie();
-        store = Lists.newArrayList();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(dateFormat);
-        uesHost = null;
+        useHost = null;
         for (String queryWord : queryKey) {
             for (int i = interval; i >= 0; i--) {
                 try {
-                    String before = LocalDateTime.now().minusHours(i).format(timeFormatter);
+                    String before = LocalDateTime.now().minusHours(i).format(timeFormatter);//搜索的时间间隔参数1h
                     String now = LocalDateTime.now().minusHours(i + 1).format(timeFormatter);
                     doCrawler(cookie, before, now, queryWord, 1);
                     Thread.sleep((random.nextInt(10) + 1) * 1000);
                 } catch (Exception e) {
                     logger.error("爬虫异常", e);
+                    useHost = null;
+                    Map<String, String> temp = CookieUtils.getCookie();
+                    if (MapUtils.isNotEmpty(temp)){
+                        cookie = temp;
+                    }
                 }
             }
         }
+        //去重过滤保存
         List<CrawlerStoreDO> result = Lists.newArrayList();
         store.forEach(s -> {
             boolean flag = filterKeyWord(s);
             if (flag) {
-                for (CrawlerStoreDO c : result) {
+                for (CrawlerStoreDO c : lastStore) {
                     if (c.getUrl().equals(s.getUrl())) {
                         flag = false;
                         break;
@@ -89,6 +102,7 @@ public class WeiboCrawlerExecutor {
             }
             if (flag) {
                 result.add(s);
+                lastStore.add(s);
             }
 
         });
@@ -97,6 +111,7 @@ public class WeiboCrawlerExecutor {
         cacheService.refreshCache();
     }
 
+    //爬虫实现
     private void doCrawler(Map<String, String> cookie, String now, String before, String queryWord,
                            Integer page) throws Exception {
         String url = "https://s.weibo.com/weibo/%25E9%25A3%258E%25E6%258E%25A7?q=" + queryWord +
@@ -106,8 +121,9 @@ public class WeiboCrawlerExecutor {
                         "Chrome/72.0.3626.121 Safari/537.36")
                 .cookies(cookie)
                 .timeout(10 * 1000);
-        if (StringUtils.isNotEmpty(uesHost)) {
-            connection = connection.proxy(uesHost.split(":")[0], NumberUtils.toInt((uesHost.split(":")[1])));
+        //判断IP封锁
+        if (StringUtils.isNotEmpty(useHost)) {
+            connection = connection.proxy(useHost.split(":")[0], NumberUtils.toInt((useHost.split(":")[1])));
         }
         Document document = connection.get();
         if (document.baseUri().contains("search_need_login")) {
@@ -119,7 +135,7 @@ public class WeiboCrawlerExecutor {
                             .cookies(cookie).timeout(10 * 1000).get();
                     if (!document.baseUri().contains("search_need_login")) {
                         logger.info("更换ip成功" + h);
-                        uesHost = h;
+                        useHost = h;
                         break;
                     }
                 } catch (Exception e) {
@@ -163,8 +179,10 @@ public class WeiboCrawlerExecutor {
             storeDO.setAuthor(name.attr("nick-name"));
 
             //设置内容
-            Element text = content.children().stream().filter(c -> c.hasAttr("node-type") && c.attr
-                    ("node-type").equals("feed_list_content_full")).findFirst().orElse(null);
+            Element text = content.children().stream()
+                    .filter(c -> c.hasAttr("node-type") &&
+                            c.attr("node-type").equals("feed_list_content_full"))
+                    .findFirst().orElse(null);
             if (Objects.isNull(text)) {
                 continue;
             }
@@ -185,6 +203,7 @@ public class WeiboCrawlerExecutor {
             setInformation(act, storeDO);
 
             store.add(storeDO);
+            logger.info(JSON.toJSONString(storeDO));
         }
         logger.info("微博爬取搜索：" + queryWord + ",共" + page.toString() + "页数据" + store.size() + "条");
         Element pages = document.getElementsByClass("s-scroll").first();
@@ -194,6 +213,7 @@ public class WeiboCrawlerExecutor {
         }
     }
 
+    //解析点赞评论等信息
     private void setInformation(Element act, CrawlerStoreDO storeDO) {
         Element ul = act.getElementsByTag("ul").first();
         if (Objects.isNull(ul)) {
@@ -242,6 +262,7 @@ public class WeiboCrawlerExecutor {
         storeDO.setUrl("https:" + url.attr("href"));
     }
 
+    //关键词过滤
     private boolean filterKeyWord(CrawlerStoreDO storeDO) {
         List<KeyWordDO> keyWords = keyWordExecutor.execute(storeDO, filterKeyCount);
         for (KeyWordDO keyWordDO : keyWords) {
@@ -257,6 +278,7 @@ public class WeiboCrawlerExecutor {
         return false;
     }
 
+    //保存
     private void storeCrawler(List<CrawlerStoreDO> crawlers) {
         if (CollectionUtils.isEmpty(crawlers)) {
             logger.warn("爬虫最终结果无数据存入数据库");
@@ -286,11 +308,19 @@ public class WeiboCrawlerExecutor {
     }
 
     private void getConfig() {
-        queryKey = StringToCollectionUtils.stringToList(cacheService.getConfig("QueryKey"));
-        filterKey = StringToCollectionUtils.stringToSet(cacheService.getConfig("FilterKey"));
-        interval = NumberUtils.toInt(cacheService.getConfig("TimeInterval"), 3);
-        dateFormat = cacheService.getConfig("DateFormat");
-        filterKeyCount = NumberUtils.toInt(cacheService.getConfig("FilterKeyCount"), 5);
-        storeKeyCount = NumberUtils.toInt(cacheService.getConfig("StoreKeyCount"), 10);
+        queryKey = StringToCollectionUtils.stringToList(cacheService.getConfig("QueryKey"));//搜索关键词
+        filterKey = StringToCollectionUtils.stringToSet(cacheService.getConfig("FilterKey"));//过滤关键词
+        interval = NumberUtils.toInt(cacheService.getConfig("TimeInterval"), 3);//搜索间隔
+        dateFormat = cacheService.getConfig("DateFormat");//时间格式
+        filterKeyCount = NumberUtils.toInt(cacheService.getConfig("FilterKeyCount"), 5);//过滤关键词数
+        storeKeyCount = NumberUtils.toInt(cacheService.getConfig("StoreKeyCount"), 10);//保存关键词数
+        hosts = ipUtils.execute();//预构建IP池
+        store = Lists.newArrayList();
+        if (lastRunTime == null){//针对小于1h的爬虫缓存上次运行时间
+            lastRunTime = System.currentTimeMillis();
+        }else if (System.currentTimeMillis() - lastRunTime >= 60 * 60 * 1000){
+            lastStore = Lists.newArrayList();
+            lastRunTime = System.currentTimeMillis();
+        }
     }
 }

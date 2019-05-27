@@ -55,7 +55,7 @@ public class WeiBoServiceImpl implements WeiBoService {
     public WeiBoListVO getInformationForList(ListShowDO showDO) {
         WeiBoListVO weiBoListVO = new WeiBoListVO();
         List<CrawlerForWeiBo> weiBos = Lists.newArrayList();
-        if (StringUtils.isEmpty(showDO.getKey())) {
+        if (StringUtils.isEmpty(showDO.getKey())) {//无指定关键词
             weiBos = weiBoRepository.queryByPagesWithCondition(StringUtils.EMPTY, (showDO.getIndex() - 1) * showDO
                     .getSize(), showDO.getSize());
         } else {
@@ -121,17 +121,17 @@ public class WeiBoServiceImpl implements WeiBoService {
         }
         List<KeyWordDO> keyWordDOList = Lists.newArrayList();
         keyWords.forEach(k -> {
-            keyWordDOList.addAll(JsonUtils.jsonToList(k, KeyWordDO.class));
+            keyWordDOList.addAll(JsonUtils.jsonToList(k, KeyWordDO.class));//反序列化关键词
         });
         Map<String, Integer> map = Maps.newHashMap();
         keyWordDOList.forEach(k -> {
-            if (CollectionUtils.isEmpty(analysisDO.getNatures()) && !otherFilter.contains(k.getNature())) {
+            if (CollectionUtils.isEmpty(analysisDO.getNatures()) && !otherFilter.contains(k.getNature())) {//未指定自动过滤不必要词性
                 map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
-            } else if (analysisDO.getNatures().stream().anyMatch(a -> k.getNature().startsWith(a))) {
+            } else if (analysisDO.getNatures().stream().anyMatch(a -> k.getNature().startsWith(a))) {//指定词性前缀过滤
                 map.put(k.getKeyWord(), Optional.ofNullable(map.get(k.getKeyWord())).orElse(0) + 1);
             }
         });
-        List<String> filterKey = StringToCollectionUtils.stringToList(cacheService.getConfig("FilterKey"));
+        List<String> filterKey = StringToCollectionUtils.stringToList(cacheService.getConfig("FilterKey"));//去除搜索关键词
         List<AnaDO> sorted = map.entrySet().stream()
                 .map(this::convert2WeiBoAnaVO)
                 .filter(w -> !filterKey.contains(w.getName()))
@@ -141,7 +141,7 @@ public class WeiBoServiceImpl implements WeiBoService {
         for (AnaDO anaVO : sorted) {
             boolean flag = true;
             for (AnaDO res : result) {
-                if (res.getName().contains(anaVO.getName())) {
+                if (res.getName().contains(anaVO.getName())) {//合并相似，如上海市和上海
                     flag = false;
                     res.setFeq(res.getFeq() + anaVO.getFeq());
                     break;

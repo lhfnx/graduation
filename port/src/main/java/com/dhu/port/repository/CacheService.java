@@ -14,20 +14,26 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 内存缓存
+ */
 @Component
 public class CacheService implements InitializingBean {
     @Autowired
     private WeiBoRepository weiBoRepository;
-
     @Autowired
     private TouTiaoRepository touTiaoRepository;
     @Autowired
     private ConfigRepository configRepository;
 
-    private List<CrawlerForWeiBo> weiBoCache = Lists.newArrayList();
-    private List<CrawlerForTouTiao> touTiaoCache = Lists.newArrayList();
-    private Map<String,String> configCache = Maps.newHashMap();
+    private List<CrawlerForWeiBo> weiBoCache = Lists.newArrayList();//微博首页预读
+    private List<CrawlerForTouTiao> touTiaoCache = Lists.newArrayList();//头条首页预读
+    private Map<String,String> configCache = Maps.newHashMap();//爬虫配置缓存
 
+    /**
+     * 项目启动时执行该方法
+     * @throws Exception
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         weiBoCache.addAll(weiBoRepository.queryForCache());
@@ -35,6 +41,7 @@ public class CacheService implements InitializingBean {
         configCache = configRepository.queryAll();
     }
 
+    //刷新缓存
     public void refreshCache() {
         List<CrawlerForWeiBo> weiBos = weiBoRepository.queryForCache();
         List<CrawlerForTouTiao> touTiaos = touTiaoRepository.queryForCache();
@@ -50,6 +57,7 @@ public class CacheService implements InitializingBean {
         }
     }
 
+    //刷新配置
     public void refreshConfig() {
         Map<String,String> configs = configRepository.queryAll();
         if (!CollectionUtils.isEmpty(configs)){

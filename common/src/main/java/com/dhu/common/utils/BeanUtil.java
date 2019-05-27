@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+//对象拷贝工具类
 public class BeanUtil {
 
     private static final DozerBeanMapper mapper = new DozerBeanMapper();
@@ -32,6 +32,7 @@ public class BeanUtil {
         return dest;
     }
 
+    //对象深拷贝
     public static <S, T> T copyProperties(S orig, Class<T> destClz) {
         if(orig == null) return null;
         T t = mapper.map(orig, destClz);

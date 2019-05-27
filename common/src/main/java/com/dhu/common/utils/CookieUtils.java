@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+//微博游客身份
 public class CookieUtils {
     private static final OkHttpClient okHttpClient = new OkHttpClient();
     private static Integer retryTimes = 5;
@@ -65,6 +66,7 @@ public class CookieUtils {
         return obj;
     }
 
+    //获取cookie
     public static Map<String, String> getCookie() {
         retryTimes--;
         if (retryTimes.compareTo(0) < 0) {

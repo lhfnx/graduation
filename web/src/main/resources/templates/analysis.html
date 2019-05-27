@@ -25,7 +25,7 @@
                 }
             });
             return rdata;
-        }
+        }//封装关键词分析的方法
 
         function areaChartf(url) {
             var data = analysing(url,["ns", "nsf"], 10, 7, "");
@@ -46,9 +46,9 @@
                     data: feqs
                 }]
             });
-        }
+        }//关键词结构传入实参后，筛选出7天内10个热点地名生成柱状图
         function fraudChartf(url) {
-            var data = analysing(url,["n", "nv"], 5, 7, "诈骗");
+            var data = analysing(url,["n"], 5, 7, "诈骗");
             var names = [];
             var feqs = [];
             for (var i = 0; i < data.length; i++) {
@@ -79,10 +79,10 @@
                     }
                 ]
             });
-        }
+        }//关键词结构传入实参后，筛选出7天内10个诈骗高频名词生成饼状图
 
         function riskChartf(url) {
-            var data = analysing(url,["n", "nv"], 5, 7, "风控");
+            var data = analysing(url,["n"], 5, 7, "风控");
             var names = [];
             var feqs = [];
             for (var i = 0; i < data.length; i++) {
@@ -113,10 +113,10 @@
                     }
                 ]
             });
-        }
+        }//关键词结构传入实参后，筛选出7天内10个风控高频名词生成饼状图
 
         function cloudChartf(url) {
-            var data = analysing(url,["n", "v"], 100, 7, "");
+            var data = analysing(url,["n"], 100, 7, "");
             var rdata = [];
             for (var i = 0; i < data.length; i++) {
                 rdata.push({
@@ -151,7 +151,7 @@
                     data:rdata
                 }]
             });
-        }
+        }//关键词结构传入实参后，筛选出7天内100个诈骗风控高频名/动词生成字符云
         $(function () {
             $(".weibo").click(function () {
                 fraudChartf("/weibo/analysis");

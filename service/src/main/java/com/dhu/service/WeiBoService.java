@@ -12,13 +12,18 @@ import java.util.List;
 
 public interface WeiBoService {
 
+    //首页预读
     List<WeiBoVO> getInformationFromCache(Integer num);
 
+    //列表页获取
     WeiBoListVO getInformationForList(ListShowDO showDO);
 
+    //指定获取
     CrawlerForWeiBo getInformation(Long id);
 
+    //热文
     List<WeiBoVO> getTodayInformationByHot(HotDO hotDO);
 
+    //数据分析
     List<AnaDO> getAnalysis(AnalysisDO analysisDO);
 }

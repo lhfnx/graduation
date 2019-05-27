@@ -25,6 +25,7 @@ public class TouTiaoController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    //首页
     @RequestMapping(value = "cache", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult getCache(@RequestBody CacheDO cacheDO) {
@@ -40,6 +41,7 @@ public class TouTiaoController {
         }
     }
 
+    //列表页
     @RequestMapping(value = "list", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult listShow(@RequestBody ListShowDO showDO) {
@@ -56,6 +58,7 @@ public class TouTiaoController {
         }
     }
 
+    //热文
     @RequestMapping(value = "hot",method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult hotShow(@RequestBody HotDO hotDO){
@@ -72,6 +75,7 @@ public class TouTiaoController {
         }
     }
 
+    //数据分析
     @RequestMapping(value = "analysis",method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult analysisKey(@RequestBody AnalysisDO analysisDO){

@@ -1,14 +1,18 @@
 package com.dhu.crawler;
 
+import com.alibaba.fastjson.JSON;
 import com.dhu.crawler.toutiao.ToutiaoCrawlerExecutor;
 import com.dhu.crawler.weibo.CrawlerStoreDO;
+import com.dhu.crawler.weibo.KeyWordExecutor;
 import com.dhu.crawler.weibo.WeiboCrawlerExecutor;
 import com.dhu.crawler.weibo.WeiboIPUtils;
+import com.dhu.model.DO.KeyWordDO;
 import com.google.common.collect.Lists;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.mining.word.TfIdfCounter;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.tokenizer.IndexTokenizer;
+import com.hankcs.hanlp.tokenizer.NLPTokenizer;
 import org.ansj.app.keyword.KeyWordComputer;
 import org.ansj.app.keyword.Keyword;
 import org.ansj.splitWord.analysis.BaseAnalysis;
@@ -21,6 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +45,8 @@ public class WeiboCrawlerExecutorApplicationTests {
 	ToutiaoCrawlerExecutor toutiaoCrawlerExecutor;
 	@Autowired
 	WeiboIPUtils ipUtils;
+	@Autowired
+	KeyWordExecutor keyWordExecutor;
 	@Test
 	public void contextLoads() {
 		weiboCrawlerExecutor.execute();
@@ -63,25 +72,39 @@ public class WeiboCrawlerExecutorApplicationTests {
 
 	@Test
 	public void testHan(){
-		String str = "【立陶宛一男子诈骗谷歌脸书 涉案1.22亿刀被判30年】近日，据国外媒体报道，一名立陶宛男子在2013-2015年期间，通过伪造支票的方式，诈骗了脸书和谷歌两家公司，涉案金额高达1.22" +
-				"亿美金（约合8.2亿人民币）。\n" +
-				"该男子伪造了订单发票和各式虚假文书，用邮件一起发送，为了虚构合法的假象，他还伪造了订单合同已经各种签名信件。此人现在面临美国对他的电信诈骗，巨额盗窃和洗钱的指控，并可能被判处长达30年的监禁。";
-//		List<String> keywords = TextRankKeyword.getKeywordList(str, 10);
+		String str = "国际黄金原油分析师提示：美盘开盘，但黄金并未有太大的波动，大家还需要耐心等待，晚间操作上黄金我们依旧看多做多，回调就是做多的机会，但大家 进场一定要做好风控，不知道怎么操作的朋友可以跟上老师实盘实时操作。【 美元指数 大小非农 今日黄金走势分析 黄金原油期货分析 金融投资理财 外汇黄金 恒生指数 黄金喊单 】";
+		//		List<String> keywords = TextRankKeyword.getKeywordList(str, 10);
 		TfIdfCounter keywordExtractor = new TfIdfCounter();
-		List<String> keywords = keywordExtractor.getKeywordsWithTfIdf(str,10).stream().map(Map.Entry::getKey).collect(Collectors.toList());
+		List<Map.Entry<String, Double>> keywords = keywordExtractor.getKeywordsWithTfIdf(str,10);
 		System.out.println(keywords.toString());
 		KeyWordComputer ky = new KeyWordComputer(10);
 		List<Keyword> keywordList = ky.computeArticleTfidf(str);
 		System.out.println(keywordList);
+		CrawlerStoreDO storeDO = new CrawlerStoreDO();
+		storeDO.setText(str);
+		List<KeyWordDO> wordDOS = keyWordExecutor.execute(storeDO, 10);
+		System.out.println(JSON.toJSONString(wordDOS));
+//		File file = new File("C:\\Users\\hasee\\Desktop\\毕业设计\\pku98\\199801.txt");
+//		StringBuilder result = new StringBuilder();
+//		try{
+//			BufferedReader br = new BufferedReader(new FileReader(file));//构造一个BufferedReader类来读取文件
+//			String s = null;
+//			while((s = br.readLine())!=null){//使用readLine方法，一次读一行
+//				keywordExtractor.add(s);
+//			}
+//			br.close();
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		List<Map.Entry<String, Double>> keywords2 = keywordExtractor.getKeywordsWithTfIdf(str,10);
+//		System.out.println(keywords2.toString());
 	}
 
 	@Test
     public void testAnsj(){
 	    String str = "深圳市公安部龙华分局";
-		System.out.println(ToAnalysis.parse(str));
-		System.out.println(BaseAnalysis.parse(str));
-		System.out.println(NlpAnalysis.parse(str));
-		System.out.println(IndexAnalysis.parse(str));
+		System.out.println(HanLP.segment(str));
+		System.out.println(NLPTokenizer.segment(str));
 		Segment segment = HanLP.newSegment().enablePlaceRecognize(true);
 		System.out.println(segment.seg(str));
 		System.out.println(IndexTokenizer.segment(str));

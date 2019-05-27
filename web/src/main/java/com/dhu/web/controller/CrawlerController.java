@@ -20,6 +20,7 @@ public class CrawlerController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    //手动运行微博爬虫
     @RequestMapping(value = "weibo/execute", method = RequestMethod.GET)
     @ResponseBody
     public String executeWeiboCrawler() {
@@ -27,6 +28,7 @@ public class CrawlerController {
         return "微博爬虫运行结束";
     }
 
+    //手动运行头条爬虫
     @RequestMapping(value = "toutiao/execute", method = RequestMethod.GET)
     @ResponseBody
     public String executeToutiaoCrawler() {

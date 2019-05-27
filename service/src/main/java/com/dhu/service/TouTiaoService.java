@@ -12,13 +12,18 @@ import java.util.List;
 
 public interface TouTiaoService {
 
+    //首页预读
     List<TouTiaoVO> getInformationFromCache(Integer num);
 
+    //列表页获取
     TouTiaoListVO getInformationForList(ListShowDO showDO);
 
+    //指定获取
     CrawlerForTouTiao getInformation(Long id);
 
+    //热文
     List<TouTiaoVO> getTodayInformationByHot(HotDO hotDO);
 
+    //数据分析
     List<AnaDO> getAnalysis(AnalysisDO analysisDO);
 }

@@ -29,6 +29,7 @@ public class WeiBoController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    //首页
     @RequestMapping(value = "cache", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult getCache(@RequestBody CacheDO cacheDO) {
@@ -44,6 +45,7 @@ public class WeiBoController {
         }
     }
 
+    //列表页
     @RequestMapping(value = "list", method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult listShow(@RequestBody ListShowDO showDO) {
@@ -60,6 +62,7 @@ public class WeiBoController {
         }
     }
 
+    //热文
     @RequestMapping(value = "hot",method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult hotShow(@RequestBody HotDO hotDO){
@@ -76,6 +79,7 @@ public class WeiBoController {
         }
     }
 
+    //数据分析
     @RequestMapping(value = "analysis",method = RequestMethod.POST)
     @ResponseBody
     public ResponseResult analysisKey(@RequestBody AnalysisDO analysisDO){

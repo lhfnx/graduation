@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
+/**
+ * 控制页面跳转
+ */
 @Controller
 public class HomeController {
 

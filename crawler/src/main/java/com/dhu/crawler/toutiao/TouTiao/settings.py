@@ -19,6 +19,7 @@ NEWSPIDER_MODULE = 'TouTiao.spiders'
 #USER_AGENT = 'TouTiao (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
+# 不遵循robots协议保证爬取广度
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -27,6 +28,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
+# 设置下载延迟，模拟人为访问行为
 DOWNLOAD_DELAY = 0.5
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
@@ -65,6 +67,7 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
+# 启动pipeline管道进行数据存储
 ITEM_PIPELINES = {
    'TouTiao.pipelines.ToutiaoPipeline': 300,
 }
